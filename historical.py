@@ -1,7 +1,8 @@
 from yahoo_finance import Share
 from pprint import pprint
 
-stock_symbols = ['GOOGL', 'YHOO']
+stock_symbols = ['GOOGL', 'YHOO', 'MSFT', 'AMZN', 'TWTR', \
+        'FB', 'CSCO', 'BAC', 'AAPL', 'AMD']
 
 def main():
     for symbol in stock_symbols:
