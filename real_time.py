@@ -7,13 +7,17 @@ stock_symbols = ['GOOGL', 'YHOO', 'MSFT', 'AMZN', 'TWTR', \
         'FB', 'CSCO', 'BAC', 'AAPL', 'AMD']
 interval = 60
 
+# create table
 def create_table(conn, cursor):
     query = '''CREATE TABLE stocks
                 (symbol text, price real, date text, time text, volume integer)'''
     cursor.execute(query)
     conn.commit()
 
+# download one set of data for all symbols for one time step
 def download_one(conn, cursor):
+
+    # set up some variables
     url = r'http://finance.yahoo.com/d/quotes.csv?s={0}&f={1}'
     response_format = 'sl1d1t1v'
     datetime_input_format = '"%m/%d/%Y","%I:%M%p"'
@@ -25,11 +29,14 @@ def download_one(conn, cursor):
     write_flag = False
     stock_time = ''
 
+    # query the API
     try:
         response = urllib2.urlopen(url.format('+'.join(stock_symbols), response_format))
     except Exception as e:
         print e
         return
+
+    # read the response and write into database
     for line in response:
         line = line.strip().split(',')
         date = datetime.strptime(','.join(line[2:4]), datetime_input_format)
@@ -38,6 +45,7 @@ def download_one(conn, cursor):
         time_output = date.strftime(time_output_format)
         stock_time = time_output
 
+        # filter proper times
         if time_open < time_output < time_close:
             cursor.execute(insert_query.format(
                 line[0], line[1], date_output, time_output, line[4]))
