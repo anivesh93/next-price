@@ -11,7 +11,7 @@ CREATE TABLE stock (
 
 ### Historical
 ```
-CREATE TABLE stock (
+CREATE TABLE historical (
     symbol TEXT,
     open REAL,
     high REAL,
@@ -25,7 +25,7 @@ CREATE TABLE stock (
 
 ### RealTime
 ```
-CREATE TABLE stock (
+CREATE TABLE realtime (
     symbol TEXT,
     price REAL,
     date TEXT,
