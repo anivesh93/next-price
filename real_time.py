@@ -9,7 +9,7 @@ interval = 60
 
 # create table
 def create_table(conn, cursor):
-    query = '''CREATE TABLE stocks
+    query = '''CREATE TABLE IF NOT EXISTS realtime
                 (symbol text, price real, date text, time text, volume integer)'''
     cursor.execute(query)
     conn.commit()
@@ -23,7 +23,7 @@ def download_one(conn, cursor):
     datetime_input_format = '"%m/%d/%Y","%I:%M%p"'
     date_output_format = '%Y-%m-%d'
     time_output_format = '%H:%M'
-    insert_query = 'INSERT INTO stocks VALUES ({0}, {1}, "{2}", "{3}", {4})'
+    insert_query = 'INSERT INTO realtime VALUES ({0}, {1}, "{2}", "{3}", {4})'
     time_open, time_close = '09:30', '16:00'
 
     write_flag = False
