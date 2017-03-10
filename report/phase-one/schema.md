@@ -5,8 +5,8 @@
 ```
 CREATE TABLE stock (
     symbol TEXT PRIMARY KEY,
-    name TEXT,
-)
+    name TEXT
+);
 ```
 
 ### Historical
@@ -19,8 +19,8 @@ CREATE TABLE historical (
     close REAL,
     date TEXT,
     volume INTEGER,
-    FOREIGN KEY (symbol) REFERENCES stock (symbol),
-)
+    FOREIGN KEY (symbol) REFERENCES stock (symbol)
+);
 ```
 
 ### RealTime
@@ -31,10 +31,12 @@ CREATE TABLE realtime (
     date TEXT,
     time TEXT,
     volume INTEGER,
-    FOREIGN KEY (symbol) REFERENCES stock (symbol),
-)
+    FOREIGN KEY (symbol) REFERENCES stock (symbol)
+);
 ```
 \pagebreak
 
 ## Diagram
 ![Database Schema Diagram](schema.png)
+
+
