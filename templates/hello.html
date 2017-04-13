@@ -1,4 +1,9 @@
 <!doctype html>
+<script>
+var someMap = {{ name|tojson|safe }};
+	console.log(someMap);
+</script>
+
 <title>Hello from Flask</title>
 {% if name %}
   <h1>Hello {{ name }}!</h1>
