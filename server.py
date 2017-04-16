@@ -21,12 +21,11 @@ def stock(symbol=None):
 @app.route('/hello/')
 @app.route('/hello/<name>')
 def hello(name=None):
+    name = {1: 'foo', 2: 'bar', 3: 'baz'}
     return render_template('hello.html', name=name)
 
 def main():
     app.run()
-    
 
 if __name__ == '__main__':
     main()
-
