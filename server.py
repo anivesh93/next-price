@@ -27,7 +27,8 @@ def hello(name=None):
     return render_template('hello.html', name=name)
 
 @app.route('/plot/')
-def plot():
+@app.route('/plot/<name>')
+def plot(name=None):
 	conn = sqlite3.connect('data/stocks.db')
 	cursor = conn.cursor()
 
@@ -45,14 +46,14 @@ def plot():
 	    cleaned.append(temp)
 	    ctr += 1
 
-	for row in cleaned:
-	    print row
+	# for row in cleaned:
+	    # print row
 
 	conn.close()
 
-	fp = open('templates/data.json', 'wb')
-	json.dump(cleaned, fp, indent = 3)
-	return render_template('plot.html')
+	# fp = open('templates/data.json', 'wb')
+	# json.dump(cleaned, fp, indent = 3)
+	return render_template('plot.html', name = cleaned)
 
 def main():
     app.run()

@@ -96,7 +96,10 @@ var svg = d3.select("body").append("svg")
 
 svg.call(tip);
 
-d3.json("data.json", function(error, data) {
+var data = {{ name|tojson|safe }}; 
+console.log(data);
+
+//d3.json(json, function(error, data) {
   x.domain(data.map(function(d) { return d.date; }));
   y.domain([0, d3.max(data, function(d) { return d.closePrice; })]);
 
@@ -131,6 +134,7 @@ d3.json("data.json", function(error, data) {
   .on('mouseover', tip.show)
   .on('mouseout', tip.hide)
 
-});
+//});
 
 </script>
+
