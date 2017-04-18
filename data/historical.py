@@ -20,15 +20,18 @@ def main():
         
         path = 'data/hist_' + symbol + '.csv'
         for day_data in data:
-            cursor.execute(insert_query.format(
-                symbol,
-                day_data['Date'],
-                day_data['Open'],
-                day_data['High'],
-                day_data['Low'],
-                day_data['Close'],
-                day_data['Volume']))
-
+            try:
+                cursor.execute(insert_query.format(
+                    symbol,
+                    day_data['Date'],
+                    day_data['Open'],
+                    day_data['High'],
+                    day_data['Low'],
+                    day_data['Close'],
+                    day_data['Volume']))
+            except:
+                print 'Insert failed for', symbol, day_data[date]
+                
         conn.commit()
 
     conn.close()
