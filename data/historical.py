@@ -29,8 +29,8 @@ def main():
                     day_data['Low'],
                     day_data['Close'],
                     day_data['Volume']))
-            except:
-                print 'Insert failed for', symbol, day_data[date]
+            except Exception as e:
+                print 'insert failed for', symbol, day_data['Date']
                 
         conn.commit()
 
