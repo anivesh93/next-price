@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS historical (
 CREATE TABLE IF NOT EXISTS realtime (
     symbol TEXT,
     date TEXT,
+	time TEXT,
     price REAL,
     volume INTEGER,
     PRIMARY KEY (symbol, date),
