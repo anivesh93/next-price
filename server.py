@@ -6,17 +6,13 @@ app.debug = True
 def index():
     return render_template('index.html')
 
-@app.route('/realtime')
-def realtime():
-    return render_template('realtime.html')
+@app.route('/realtime/<symbol>')
+def realtime(symbol=None):
+    return render_template('realtime.html', symbol=symbol)
 
-@app.route('/historical')
-def historical():
-    return render_template('historical.html')
-
-@app.route('/<symbol>')
-def stock(symbol=None):
-    return render_template('stock.html')
+@app.route('/historical/<symbol>')
+def historical(symbol=None):
+    return render_template('historical.html', symbol=symbol)
 
 @app.route('/hello/')
 @app.route('/hello/<name>')
