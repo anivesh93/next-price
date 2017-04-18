@@ -7,13 +7,6 @@ stock_symbols = ['GOOGL', 'YHOO', 'MSFT', 'AMZN', 'TWTR', \
         'FB', 'CSCO', 'BAC', 'AAPL', 'AMD']
 interval = 60
 
-# create table
-def create_table(conn, cursor):
-    query = '''CREATE TABLE IF NOT EXISTS realtime
-                (symbol text, price real, date text, time text, volume integer)'''
-    cursor.execute(query)
-    conn.commit()
-
 # download one set of data for all symbols for one time step
 def download_one(conn, cursor):
 
@@ -23,7 +16,7 @@ def download_one(conn, cursor):
     datetime_input_format = '"%m/%d/%Y","%I:%M%p"'
     date_output_format = '%Y-%m-%d'
     time_output_format = '%H:%M'
-    insert_query = 'INSERT INTO realtime VALUES ({0}, {1}, "{2}", "{3}", {4})'
+    insert_query = 'INSERT INTO realtime VALUES ({0}, "{1}", "{2}", {3}, {4})'
     time_open, time_close = '09:30', '16:00'
 
     write_flag = False
@@ -31,7 +24,8 @@ def download_one(conn, cursor):
 
     # query the API
     try:
-        response = urllib2.urlopen(url.format('+'.join(stock_symbols), response_format))
+        response = urllib2.urlopen(url.format(
+                        '+'.join(stock_symbols), response_format))
     except Exception as e:
         print e
         return
@@ -48,7 +42,7 @@ def download_one(conn, cursor):
         # filter proper times
         if time_open < time_output < time_close:
             cursor.execute(insert_query.format(
-                line[0], line[1], date_output, time_output, line[4]))
+                line[0], date_output, time_output, line[1], line[4]))
             write_flag = True
 
     if write_flag:
@@ -61,7 +55,6 @@ def main():
 
     conn = sqlite3.connect('stocks.db')
     cursor = conn.cursor()
-    #create_table(conn, cursor)
     
     while True:
         sleep_time = interval - time.time() % interval
