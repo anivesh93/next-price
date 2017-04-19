@@ -2,9 +2,12 @@ from flask import Flask, render_template
 app = Flask(__name__)
 app.debug = True
 
+import db
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    stocks_latest = db.get_stocks_realtime()
+    return render_template('index.html', stocks=stocks_latest)
 
 @app.route('/realtime/<symbol>')
 def realtime(symbol=None):

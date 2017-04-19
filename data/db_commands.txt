@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS stock (
+    symbol TEXT PRIMARY KEY,
+    name TEXT
+)
+
+CREATE TABLE IF NOT EXISTS historical (
+    symbol TEXT,
+    date TEXT,
+    open REAL,
+    high REAL,
+    low REAL,
+    close REAL,
+    volume INTEGER,
+    PRIMARY KEY (symbol, date),
+    FOREIGN KEY (symbol) REFERENCES stock (symbol)
+);
+
+CREATE TABLE IF NOT EXISTS realtime (
+    symbol TEXT,
+    date TEXT,
+	time TEXT,
+    price REAL,
+    volume INTEGER,
+    PRIMARY KEY (symbol, date),
+    FOREIGN KEY (symbol) REFERENCES stock (symbol)
+);
+
+INSERT INTO stock VALUES
+	('GOOGL', 'Google Inc.'),
+	('YHOO', 'Yahoo Inc.'),
+	('MSFT', 'Microsoft Inc.'),
+	('AMZN', 'Amazon Inc.'),
+	('TWTR', 'Twitter Inc.'),
+	('FB', 'Facebook Inc.'),
+	('CSCO', 'Cisco'),
+	('BAC', 'Bank of America'),
+	('AAPL', 'Apple Inc.'),
+	('AMD', 'Advanced Micro Devices');
+	

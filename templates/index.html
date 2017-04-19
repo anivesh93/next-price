@@ -20,7 +20,26 @@
 		</nav>
 
 		<div class="container">
-			<h1>Welcome to next-price. This is the index page.</h1>
+
+			<br>
+
+			{% if stocks %}
+				<table class="table table-striped">
+					<thead>
+						<th>Symbol</th>
+						<th>Price</th>
+					</thead>	
+					{% for symbol, price in stocks %}
+						<tr>
+							<td> <a href="/realtime/{{symbol}}"> {{symbol}} </a> </td>
+							<td> {{ price }} </td>
+						</tr>
+					{% endfor %}
+				</table>
+			{% else %}
+				No stocks found!
+			{% endif %}
+
 		</div>
 
 		<!-- Leave the following in the bottom so that page loads faster. -->
