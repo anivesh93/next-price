@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+<script src="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.css">
+
+<div class="chartContainer">	
+  <div class="chart" id='chart3'></div>
+</div>
+<script>
+// var data = [
+// 	{date:new Date('2016-01-01'),closePrice:120.1,diff:0},
+// 	{date:new Date('2016-01-02'),closePrice:130.2,diff:10},
+// 	{date:new Date('2016-01-03'),closePrice:110.3,diff:20},
+//  //    {date:new Date('2015-12-31'), closePrice:778.01001, diff:0}, 
+// 	// {date:new Date('2015-12-30'), closePrice:790.299988, diff:12.28997800000002}, 
+// 	// {date:new Date('2015-12-29'), closePrice:793.960022, diff:3.660033999999996}, 
+// 	// {date:new Date('2015-12-28'), closePrice:782.23999, diff:-11.720031999999946},
+// 	// {date:new Date('2015-12-27'),closePrice:882.23,diff:100}
+// ]
+
+var data = {{ name|tojson|safe }};
+
+// var data = [
+//     {date:new Date('2015-12-31'),closePrice:778.01,diff:0},
+//     {date:new Date('2015-12-30'),closePrice:790.29,diff:12.28},
+//     {date:new Date('2015-12-29'),closePrice:780.96,diff:3.66},
+//     {date:new Date('2015-12-28'),closePrice:782.23,diff:-11.72},
+//     {date:new Date('2015-12-27'),closePrice:882.23,diff:100}
+// ]
+
+for (var x = 0; x < data.length; x++) {
+    data[x].date = new Date(data[x].date);
+    // data[x].closePrice = Math.round(data[x].closePrice);
+    // data[x].diff = Math.round(data[x].diff);
+}
+
+// alert(JSON.stringify(data));
+
+var chart = d3.timeseries()
+              .addSerie(data,{x:'date', y:'closePrice', diff:'diff'},{interpolate:'monotone',color:"#333"})
+              .width(900)
+
+chart('#chart3')
+</script>
+</html>
