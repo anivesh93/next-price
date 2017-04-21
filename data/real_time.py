@@ -65,5 +65,7 @@ def main():
         time.sleep(sleep_time)
         download_one(conn, cursor)
 
+    conn.close()
+
 if __name__ == '__main__':
     main()

@@ -15,6 +15,9 @@ def get_stocks_realtime():
     query = 'SELECT symbol, MAX(price) FROM realtime GROUP BY symbol';
     return select(query)
 
+def get_highest_ten_days():
+    query = 
+
 def main():
     get_stocks_realtime()
 
