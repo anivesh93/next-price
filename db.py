@@ -46,6 +46,29 @@ def get_lowest_one_year(symbol):
             date_output + '" AND symbol = "' + symbol + '";'
     return select(query)
 
+
+def get_avg_low(symbol):
+    date_1_year = datetime.now() - timedelta(days=365)
+    date_output_format = '%Y-%m-%d'
+    date_output = date_1_year.strftime(date_output_format)
+
+    query = '''
+    SELECT symbol AS sym, AVG(close) 
+    FROM historical 
+    WHERE (
+        SELECT AVG(close) 
+        FROM historical 
+        WHERE symbol=sym
+        ) < (
+        SELECT MIN(close) 
+        FROM historical 
+        WHERE date > "{0}" AND symbol="{1}"
+        ) 
+    GROUP BY symbol
+    '''
+
+    return select(query.format(date_output, symbol))
+
 def main():
     get_stocks_realtime()
 

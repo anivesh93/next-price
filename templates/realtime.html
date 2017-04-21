@@ -16,7 +16,7 @@
 				<a class="navbar-brand" href="/">next-price</a>
 				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 					<div class="navbar-nav">
-						<a class="nav-item nav-link active" href="/realtime{{realtime}}">Real-Time</a>
+						<a class="nav-item nav-link active" href="/realtime/{{symbol}}">Real-Time</a>
 						<a class="nav-item nav-link" href="/historical/{{symbol}}">Historical</a>
 					</div>
 				</div>
@@ -45,6 +45,11 @@
 					# 4
 					<br/>
 					{{ low_1_year }}
+					<br/>
+
+					# 5
+					<br/>
+					{{ avg_low  }}
 				</div>
 
 				<div class="col-md-9">
