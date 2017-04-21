@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS historical (
 CREATE TABLE IF NOT EXISTS realtime (
     symbol TEXT,
     date TEXT,
-	time TEXT,
+    time TEXT,
     price REAL,
     volume INTEGER,
-    PRIMARY KEY (symbol, date),
+    PRIMARY KEY (symbol, date, time),
     FOREIGN KEY (symbol) REFERENCES stock (symbol)
 );
 
