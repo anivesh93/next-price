@@ -26,14 +26,17 @@ def hello(name=None):
     name = {1: 'foo', 2: 'bar', 3: 'baz'}
     return render_template('hello.html', name=name)
 
-@app.route('/plot/')
+# @app.route('/plot/')
 @app.route('/plot/<name>')
 def plot(name=None):
 	conn = sqlite3.connect('data/stocks.db')
 	cursor = conn.cursor()
-
-	cursor.execute('SELECT * FROM historical LIMIT 50')
+	#print name
+	#cursor.execute('SELECT * FROM historical WHERE SYMBOL = name LIMIT 100')
+	cursor.execute('SELECT * FROM historical WHERE SYMBOL = ? LIMIT 50', (name,))
 	rows = cursor.fetchall()
+
+	print rows
 
 	cleaned = []
 	ctr = 1
@@ -61,7 +64,8 @@ def linechart(name=None):
 	conn = sqlite3.connect('data/stocks.db')
 	cursor = conn.cursor()
 
-	cursor.execute('SELECT * FROM historical LIMIT 50')
+	# cursor.execute('SELECT * FROM historical LIMIT 50')
+	cursor.execute('SELECT * FROM historical WHERE SYMBOL = ? LIMIT 100', (name,))
 	rows = cursor.fetchall()
 
 	cleaned = []
@@ -78,9 +82,11 @@ def linechart(name=None):
 	for i in xrange(len(cleaned)):
 	    # print row[4], row[5]
 	    if i == 0:
-	    	cleaned[i]["diff"] = 0
+	    	# cleaned[i]["diff"] = 0
+	    	cleaned[i]["diff"] = cleaned[i]["closePrice"]
 	    else:
-	    	cleaned[i]["diff"] = cleaned[i]["closePrice"] - cleaned[i-1]["closePrice"]
+	    	# cleaned[i]["diff"] = cleaned[i-1]["closePrice"] - cleaned[i]["closePrice"]
+	    	cleaned[i]["diff"] = cleaned[i]["closePrice"]
 	    ctr += 1
 
 	conn.close()
@@ -100,7 +106,8 @@ def googleChart(name=None):
 	conn = sqlite3.connect('data/stocks.db')
 	cursor = conn.cursor()
 
-	cursor.execute('SELECT * FROM historical LIMIT 50')
+	# cursor.execute('SELECT * FROM historical LIMIT 50')
+	cursor.execute('SELECT * FROM historical WHERE SYMBOL = ? LIMIT 100', (name,))
 	rows = cursor.fetchall()
 
 	cleaned = []
