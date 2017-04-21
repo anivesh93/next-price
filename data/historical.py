@@ -1,5 +1,6 @@
 from yahoo_finance import Share
 from pprint import pprint
+from datetime import datetime
 
 import sqlite3
 
@@ -15,8 +16,12 @@ def main():
 
     for symbol in stock_symbols:
         print 'getting data for', symbol
+
+        date_output_format = '%Y-%m-%d'
+        date_output = datetime.now().strftime(date_output_format)
+
         stock = Share(symbol)
-        data = stock.get_historical('2014-01-01', '2017-04-18')
+        data = stock.get_historical('2014-01-01', date_output)
         
         path = 'data/hist_' + symbol + '.csv'
         for day_data in data:

@@ -13,7 +13,7 @@ def select(query):
 
 # return all stocks with the latest realtime price
 def get_stocks_realtime():
-    query = 'SELECT symbol, MAX(price) FROM realtime GROUP BY symbol';
+    query = 'SELECT symbol, printf("%.2f", MAX(price)) FROM realtime GROUP BY symbol';
     return select(query)
 
 # get the highest stock price of any company in the last ten days
