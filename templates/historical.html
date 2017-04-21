@@ -16,15 +16,43 @@
 				<a class="navbar-brand" href="/">next-price</a>
 				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 					<div class="navbar-nav">
-						<a class="nav-item nav-link" href="/realtime">Real-Time</a>
-						<a class="nav-item nav-link active" href="/historical">Historical</a>
+						<a class="nav-item nav-link" href="/realtime/{{symbol}}">Real-Time</a>
+						<a class="nav-item nav-link active" href="/historical/{{symbol}}">Historical</a>
 					</div>
 				</div>
 			</div>
 		</nav>
 
 		<div class="container">
+
 			<h3> {{ symbol }} </h3>
+
+			<div class="row">
+
+				<div class="col-md-3">
+					<h2 align="center"> Queries </h2>
+
+					# 2
+					<br/>
+					{{ high_10 }}
+					<br/>
+					
+					# 3
+					<br/>
+					{{ avg_1_year }}
+					<br/>
+
+					# 4
+					<br/>
+					{{ low_1_year }}
+				</div>
+
+				<div class="col-md-9">
+					<h2 align="center"> Graph </h2>
+				</div>
+
+			</div>
+
 		</div>
 
 		<!-- Leave the following in the bottom so that page loads faster. -->
