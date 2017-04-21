@@ -41,8 +41,11 @@ def download_one(conn, cursor):
 
         # filter proper times
         if time_open < time_output < time_close:
-            cursor.execute(insert_query.format(
-                line[0], date_output, time_output, line[1], line[4]))
+            try:
+                cursor.execute(insert_query.format(
+                    line[0], date_output, time_output, line[1], line[4]))
+            except Exception as e:
+                print e
             write_flag = True
 
     if write_flag:
