@@ -16,8 +16,8 @@
 				<a class="navbar-brand" href="/">next-price</a>
 				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 					<div class="navbar-nav">
-						<a class="nav-item nav-link active" href="/realtime">Real-Time</a>
-						<a class="nav-item nav-link" href="/historical">Historical</a>
+						<a class="nav-item nav-link active" href="/realtime{{realtime}}">Real-Time</a>
+						<a class="nav-item nav-link" href="/historical/{{symbol}}">Historical</a>
 					</div>
 				</div>
 			</div>
@@ -31,6 +31,20 @@
 
 				<div class="col-md-3">
 					<h2 align="center"> Queries </h2>
+
+					# 2
+					<br/>
+					{{ high_10 }}
+					<br/>
+					
+					# 3
+					<br/>
+					{{ avg_1_year }}
+					<br/>
+
+					# 4
+					<br/>
+					{{ low_1_year }}
 				</div>
 
 				<div class="col-md-9">

@@ -1,4 +1,5 @@
 import sqlite3 as sql
+from datetime import datetime, timedelta
 
 # execute a select statement query on stocks db and return all results
 def select(query):
@@ -13,6 +14,36 @@ def select(query):
 # return all stocks with the latest realtime price
 def get_stocks_realtime():
     query = 'SELECT symbol, MAX(price) FROM realtime GROUP BY symbol';
+    return select(query)
+
+# get the highest stock price of any company in the last ten days
+def get_highest_ten_days(symbol):
+    date_10 = datetime.now() - timedelta(days=10)
+    date_output_format = '%Y-%m-%d'
+    date_output = date_10.strftime(date_output_format)
+
+    query = 'SELECT date, MAX(close) FROM historical WHERE date > "' + \
+            date_output + '" AND symbol = "' + symbol + '";'
+    return select(query)
+
+# average stock price of any company in the latest one year
+def get_average_one_year(symbol):
+    date_1_year = datetime.now() - timedelta(days=365)
+    date_output_format = '%Y-%m-%d'
+    date_output = date_1_year.strftime(date_output_format)
+
+    query = 'SELECT AVG(close) FROM historical WHERE date > "' + \
+            date_output + '" AND symbol = "' + symbol + '";'
+    return select(query)
+
+# get the lowest stock price of any company in the last one year
+def get_lowest_one_year(symbol):
+    date_1_year = datetime.now() - timedelta(days=365)
+    date_output_format = '%Y-%m-%d'
+    date_output = date_1_year.strftime(date_output_format)
+
+    query = 'SELECT date, MIN(close) FROM historical WHERE date > "' + \
+            date_output + '" AND symbol = "' + symbol + '";'
     return select(query)
 
 def main():

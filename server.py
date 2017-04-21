@@ -11,11 +11,27 @@ def index():
 
 @app.route('/realtime/<symbol>')
 def realtime(symbol=None):
-    return render_template('realtime.html', symbol=symbol)
+    high_10 = db.get_highest_ten_days(symbol)
+    avg_1_year = db.get_average_one_year(symbol)
+    low_1_year = db.get_lowest_one_year(symbol)
+    return render_template(
+            'realtime.html', 
+            symbol=symbol, 
+            high_10=high_10,
+            avg_1_year=avg_1_year,
+            low_1_year=low_1_year)
 
 @app.route('/historical/<symbol>')
 def historical(symbol=None):
-    return render_template('historical.html', symbol=symbol)
+    high_10 = db.get_highest_ten_days(symbol)
+    avg_1_year = db.get_average_one_year(symbol)
+    low_1_year = db.get_lowest_one_year(symbol)
+    return render_template(
+            'historical.html', 
+            symbol=symbol, 
+            high_10=high_10,
+            avg_1_year=avg_1_year,
+            low_1_year=low_1_year)
 
 @app.route('/hello/')
 @app.route('/hello/<name>')
