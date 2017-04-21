@@ -5,7 +5,7 @@ import time
 
 stock_symbols = ['GOOGL', 'YHOO', 'MSFT', 'AMZN', 'TWTR', \
         'FB', 'CSCO', 'BAC', 'AAPL', 'AMD']
-interval = 60
+interval = 20
 
 # download one set of data for all symbols for one time step
 def download_one(conn, cursor):
