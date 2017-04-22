@@ -13,8 +13,38 @@ def realtime():
     return render_template('realtime.html')
 
 @app.route('/historical')
-def historical():
-    return render_template('historical.html')
+@app.route('/historical/<symbol>')
+def historical(symbol =  None):
+	conn = sqlite3.connect('data/stocks.db')
+	cursor = conn.cursor()
+
+	# cursor.execute('SELECT * FROM historical LIMIT 50')
+	cursor.execute('SELECT * FROM historical WHERE SYMBOL = ? LIMIT 100', (symbol,))
+	rows = cursor.fetchall()
+
+	cleaned = []
+	ctr = 1
+
+	for row in rows:
+	# print row[4], row[5]
+		temp = {}
+		temp["date"] = row[5]
+		temp["closePrice"]  = row[4]
+		cleaned.append(temp)
+		ctr += 1
+
+	for i in xrange(len(cleaned)):
+		# print row[4], row[5]
+		if i == 0:
+		# cleaned[i]["diff"] = 0
+			cleaned[i]["diff"] = cleaned[i]["closePrice"]
+		else:
+			# cleaned[i]["diff"] = cleaned[i-1]["closePrice"] - cleaned[i]["closePrice"]
+			cleaned[i]["diff"] = cleaned[i]["closePrice"]
+			ctr += 1
+
+	conn.close()
+	return render_template('historical.html', symbol = cleaned)
 
 @app.route('/<symbol>')
 def stock(symbol=None):

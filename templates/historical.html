@@ -25,7 +25,7 @@
 
 		<div class="container">
 
-			<h1>This page will list all the HISTORICAL stocks!</h1>
+			<!-- <h1>This page will list all the HISTORICAL stocks!</h1> -->
 
 		</div>
 
@@ -34,5 +34,29 @@
 		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+		<script src="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.css">
+
+		<div class="chartContainer">	
+  			<!-- {{symbol}} -->
+  			<div class="chart" id='chart3'></div>
+		</div>
+		<script>
+			
+			var data = {{ symbol|tojson|safe }};
+
+			for (var x = 0; x < data.length; x++) 
+			{
+    			data[x].date = new Date(data[x].date);    
+			}
+
+			var chart = d3.timeseries()
+            			.addSerie(data,{x:'date', y:'closePrice', diff:'diff'},{interpolate:'monotone',color:"#333"})
+              			.width(900)
+
+			chart('#chart3')
+		</script>
 	</body>
 </html>
