@@ -5,49 +5,53 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<!-- Semantic UI -->
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
+		<script
+										 src="https://code.jquery.com/jquery-3.1.1.min.js"
+		   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+	 crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+
 	</head>
 
 	<body>
 
-		<nav class="navbar sticky-top navbar-toggleable-md navbar-light bg-faded">
-			<div class="container">
-				<a class="navbar-brand" href="/">next-price</a>
-				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-				</div>
-			</div>
-		</nav>
+		<div class="ui main container">
 
-		<div class="container">
+			<h1 align="center" class="ui huge header" style="font-size: 5em;"> 
+				<br/>
+				next-price
+			</h1>
 
-			<br>
+			<br/>
 
-			{% if stocks %}
-				<table class="table table-striped">
-					<thead>
-						<th>Symbol</th>
-						<th>Price</th>
-					</thead>	
-					{% for symbol, price in stocks %}
+			<div class="ui grid">
+				<div class="four wide column"></div>
+				<div class="eight wide column">
+					{% if stocks %}
+					<table class="ui very basic celled table">
+						<thead>
+							<th>Symbol</th>
+							<th class="center aligned">Name</th>
+							<th class="right aligned">Price</th>
+						</thead>	
+						{% for symbol, name, price in stocks %}
 						<tr>
 							<td> <a href="/realtime/{{symbol}}"> {{symbol}} </a> </td>
-							<td> {{ price }} </td>
+							<td class="center aligned"> {{name}} </td>
+							<td class="right aligned"> {{ price }} </td>
 						</tr>
-					{% endfor %}
-				</table>
-			{% else %}
-				No stocks found!
-			{% endif %}
+						{% endfor %}
+					</table>
+					{% else %}
+					No stocks found!
+					{% endif %}
+				</div>
+				<div class="four wide column"></div>
+			</div>
 
 		</div>
 
-		<!-- Leave the following in the bottom so that page loads faster. -->
-		<!-- jQuery first, then Tether, then Bootstrap JS. -->
-		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-
-		</div>
 	</body>
 </html>

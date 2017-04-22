@@ -5,65 +5,99 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<!-- Semantic UI -->
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
+		<script
+										 src="https://code.jquery.com/jquery-3.1.1.min.js"
+		   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+	 crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
 	</head>
 
 	<body>
 
-		<nav class="navbar sticky-top navbar-toggleable-md navbar-light bg-faded">
-			<div class="container">
-				<a class="navbar-brand" href="/">next-price</a>
-				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-					<div class="navbar-nav">
-						<a class="nav-item nav-link active" href="/realtime/{{symbol}}">Real-Time</a>
-						<a class="nav-item nav-link" href="/historical/{{symbol}}">Historical</a>
-					</div>
+		<div class="ui inverted segment">
+			<div class="ui container">
+				<div class="ui inverted secondary pointing menu">
+					<a class="item" href="/"> next-price </a>
+					<a class="active item" href="/realtime/{{symbol}}"> Realtime </a>
+					<a class="item" href="/historical/{{symbol}}"> Historical </a>
 				</div>
 			</div>
-		</nav>
-
-		<div class="container">
-
-			<h3> {{ symbol }} </h3>
-
-			<div class="row">
-
-				<div class="col-md-3">
-					<h2 align="center"> Queries </h2>
-
-					# 2
-					<br/>
-					{{ high_10 }}
-					<br/>
-					
-					# 3
-					<br/>
-					{{ avg_1_year }}
-					<br/>
-
-					# 4
-					<br/>
-					{{ low_1_year }}
-					<br/>
-
-					# 5
-					<br/>
-					{{ avg_low  }}
-				</div>
-
-				<div class="col-md-9">
-					<h2 align="center"> Graph </h2>
-				</div>
-
-			</div>
-
 		</div>
 
-		<!-- Leave the following in the bottom so that page loads faster. -->
-		<!-- jQuery first, then Tether, then Bootstrap JS. -->
-		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+		<div class="ui main container">
+
+			<h1 class="huge header" align="right" style="font-size:3em;"> {{name}} </h1>
+
+			<div class="ui grid">
+				<div class="four wide column">
+					<div class="ui mini statistic">
+						<div class="label">
+							Stocks with lower average price
+						</div>
+							<br/>
+						<div class="value">
+							{% if avg_low %}
+							<table class="ui very basic celled table">
+								<thead>
+									<tr>
+										<th style="font-size:.7em;"> Symbol </th>
+										<th style="font-size:.7em;" class="center aligned"> Name </th>
+										<th style="font-size:.7em;" class="right aligned"> Price </th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for symbol, name, price in avg_low %}
+									<tr>
+										<td style="font-size:.7em;"> <a href="/realtime/{{symbol}}">
+												{{symbol}}
+										</a> </td>
+
+										<td style="font-size:.6em;" class="center aligned"> {{name}} </td>
+										<td style="font-size:.7em;" class="right aligned"> {{price}} </td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							{% else %}
+							No stocks match the criteria
+							{% endif %}
+						</div>
+					</div>
+				</div>
+
+				<div class="twelve wide column">
+					<div class="ui grid">
+						<div class="three column row">
+							<div class="column">
+								<div class="ui small green horizontal statistic">
+									<div class="label"> Highest in 10 days </div>
+									<div class="value"> {{high_10[0]}} {{high_10[1]}} </div>
+								</div>
+							</div>
+							<div class="column">
+								<div class="ui small yellow horizontal statistic">
+									<div class="label"> Average in 1 year </div>
+									<div class="value"> {{avg_1_year}} </div>
+								</div>
+							</div>
+							<div class="column">
+								<div class="ui small red horizontal statistic">
+									<div class="label"> Lowest in 1 year </div>
+									<div class="value"> {{low_1_year[0]}} {{low_1_year[1]}} </div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<h1> Graph goes here </h1>
+						</div>
+					</div>
+				</div> <!-- twelve column -->
+			</div> <!-- grid -->
+
+		</div> <!-- main container -->
+
 	</body>
 </html>
+
