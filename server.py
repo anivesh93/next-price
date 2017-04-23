@@ -1,6 +1,7 @@
 import json
 import sqlite3
 from flask import Flask, render_template
+import random
 app = Flask(__name__)
 app.debug = True
 
@@ -19,7 +20,7 @@ def historical(symbol =  None):
 	cursor = conn.cursor()
 
 	# cursor.execute('SELECT * FROM historical LIMIT 50')
-	cursor.execute('SELECT * FROM historical WHERE SYMBOL = ? LIMIT 100', (symbol,))
+	cursor.execute('SELECT * FROM historical WHERE SYMBOL = ? LIMIT 200', (symbol,))
 	rows = cursor.fetchall()
 
 	cleaned = []
@@ -30,18 +31,21 @@ def historical(symbol =  None):
 		temp = {}
 		temp["date"] = row[5]
 		temp["closePrice"]  = row[4]
+		temp["pred"] = row[4] + random.randint(-2, 2)
+		temp["ci_up"] = 0
+		temp["ci_down"] = 0
 		cleaned.append(temp)
 		ctr += 1
 
-	for i in xrange(len(cleaned)):
-		# print row[4], row[5]
-		if i == 0:
-		# cleaned[i]["diff"] = 0
-			cleaned[i]["diff"] = cleaned[i]["closePrice"]
-		else:
-			# cleaned[i]["diff"] = cleaned[i-1]["closePrice"] - cleaned[i]["closePrice"]
-			cleaned[i]["diff"] = cleaned[i]["closePrice"]
-			ctr += 1
+	# for i in xrange(len(cleaned)):
+	# 	# print row[4], row[5]
+	# 	if i == 0:
+	# 	# cleaned[i]["diff"] = 0
+	# 		cleaned[i]["pred"] = cleaned[i]["closePrice"]
+	# 	else:
+	# 		# cleaned[i]["diff"] = cleaned[i-1]["closePrice"] - cleaned[i]["closePrice"]
+	# 		cleaned[i]["pred"] = cleaned[i]["closePrice"]
+	# 		ctr += 1
 
 	conn.close()
 	return render_template('historical.html', symbol = cleaned)

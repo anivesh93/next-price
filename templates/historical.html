@@ -41,7 +41,8 @@
 
 		<div class="chartContainer">	
   			<!-- {{symbol}} -->
-  			<div class="chart" id='chart3'></div>
+  			<!-- <div class="chart" id='chart3'></div> -->
+  			<div class="chart" id='chart'></div>
 		</div>
 		<script>
 			
@@ -55,8 +56,18 @@
 			var chart = d3.timeseries()
             			.addSerie(data,{x:'date', y:'closePrice', diff:'diff'},{interpolate:'monotone',color:"#333"})
               			.width(900)
+   			
 
 			chart('#chart3')
+
+			var chart = d3.timeseries()
+          				.addSerie(data.slice(50),{x:'date',y:'closePrice'},{interpolate:'linear',color:"#a6cee3",label:"value"})
+          				.addSerie(data.slice(0, 60),
+              			{x:'date',y:'pred',ci_up:'ci_up',ci_down:'ci_down'},
+              			{interpolate:'monotone',dashed:true,color:"#a6cee3",label:"prediction"})
+          				.width(900)
+
+          	chart('#chart')
 		</script>
 	</body>
 </html>
