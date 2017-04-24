@@ -14,37 +14,10 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
 		<script src="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.js"></script>
-		<link rel="stylesheet" type="text/css" href="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.css">
-
-		<script>
-			
-			var data = {{ symbol|tojson|safe }};
-
-			for (var x = 0; x < data.length; x++) 
-			{
-    			data[x].date = new Date(data[x].date);    
-			}
-
-			var chart = d3.timeseries()
-            			.addSerie(data,{x:'date', y:'closePrice', diff:'diff'},{interpolate:'monotone',color:"#333"})
-              			.width(900)
-   			
-
-			chart('#chart3')
-
-			var chart = d3.timeseries()
-          				.addSerie(data.slice(50),{x:'date',y:'closePrice'},{interpolate:'linear',color:"#a6cee3",label:"value"})
-          				.addSerie(data.slice(0, 60),
-              			{x:'date',y:'pred',ci_up:'ci_up',ci_down:'ci_down'},
-              			{interpolate:'monotone',dashed:true,color:"#a6cee3",label:"prediction"})
-          				.width(900)
-
-          	chart('#chart')
-		</script>
+		<link rel="stylesheet" type="text/css" href="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.css">	
 	</head>
 
 	<body>
-
 		<div class="ui inverted segment">
 			<div class="ui container">
 				<div class="ui inverted secondary pointing menu">
@@ -119,19 +92,47 @@
 							</div>
 						</div>
 						<div class="row">
-							<h1> Graph goes here </h1>
-								<div class="chartContainer">	
-  									<!-- {{symbol}} -->
-  									<!-- <div class="chart" id='chart3'></div> -->
-  									<div class="chart" id='chart'></div>
-								</div>
+
+							<!-- <h1> Graph goes here </h1> -->
+							<!-- {{cleaned}} -->
+							<!-- <div class="chart" id='chart3'></div> -->
+							<div class="chart" id='chart'></div>
 						</div>
 					</div>
 				</div> <!-- twelve column -->
 			</div> <!-- grid -->
-
+		
 		</div> <!-- main container -->
+		<script>
+			
+			var data = {{ cleaned|tojson|safe }};
+			for (var x = 0; x < data.length; x++) 
+			{
+    			data[x].date = new Date(data[x].date);    
+			}
 
+			// var data2 = [
+			// 					{date:new Date('2016-01-01'),closePrice:120.1,diff:0},
+			// 					{date:new Date('2016-01-02'),closePrice:130.2,diff:10},
+			// 					{date:new Date('2016-01-03'),closePrice:110.3,diff:20}
+			// 				]
+
+			// var chart = d3.timeseries()
+   			//          	.addSerie(data,{x:'date', y:'closePrice', diff:'diff'},{interpolate:'monotone',color:"#333"})
+   			//            	.width(900)
+   			
+
+			// chart('#chart3')
+
+			var chart = d3.timeseries()
+          				.addSerie(data.slice(0, 100),{x:'date',y:'closePrice'},{interpolate:'linear',color:"#a6cee3",label:"value"})
+          				.addSerie(data.slice(90, 100),
+              			{x:'date',y:'pred',ci_up:'ci_up',ci_down:'ci_down'},
+              			{interpolate:'monotone',dashed:true,color:"#a6cee3",label:"prediction"})
+          				.width(900)
+
+          	chart('#chart')
+		</script>
 	</body>
 </html>
 

@@ -1,4 +1,5 @@
 import sqlite3 as sql
+import random
 from datetime import datetime, timedelta
 
 # execute a select statement query on stocks db and return all results
@@ -93,6 +94,17 @@ def get_avg_low(symbol):
     '''
 
     return select(query.format(date_output, symbol))
+
+def get_historical_records(symbol):
+
+    query = '''
+        SELECT * 
+        FROM historical 
+        WHERE SYMBOL = "{0}" 
+        LIMIT 100
+    '''
+
+    return select(query.format(symbol))
 
 def main():
     get_stocks_realtime()

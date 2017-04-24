@@ -3,6 +3,7 @@ app = Flask(__name__)
 app.debug = True
 
 import db
+import random
 
 @app.route('/')
 def index():
@@ -32,6 +33,19 @@ def historical(symbol=None):
     low_1_year = db.get_lowest_one_year(symbol)[0]
     avg_low = db.get_avg_low(symbol)
     name = db.get_name(symbol)[0][0]
+
+    rows = db.get_historical_records(symbol)
+    cleaned = []
+    for row in rows:
+		# print row[1], row[5]
+		temp = {}
+		temp["date"] = row[1]
+		temp["closePrice"]  = row[5]
+		temp["pred"] = row[5] + random.randint(-2, 2)
+		temp["ci_up"] = 0
+		temp["ci_down"] = 0
+		cleaned.append(temp)
+
     return render_template(
             'historical.html', 
             symbol=symbol, 
@@ -39,7 +53,8 @@ def historical(symbol=None):
             avg_1_year=avg_1_year,
             low_1_year=low_1_year,
             avg_low=avg_low,
-            name=name)
+            name=name,
+            cleaned = cleaned)
 
 @app.route('/hello/')
 @app.route('/hello/<name>')
