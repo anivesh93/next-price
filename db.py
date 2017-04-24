@@ -20,7 +20,7 @@ def get_name(symbol):
 # return all stocks with the latest realtime price
 def get_stocks_realtime():
     query = '''
-        SELECT realtime.symbol, stock.name, printf("%.2f", MAX(realtime.price)) 
+        SELECT realtime.symbol, stock.name, ROUND(MAX(realtime.price), 2) 
         FROM realtime, stock
         WHERE realtime.symbol = stock.symbol
         GROUP BY realtime.symbol;
@@ -34,7 +34,7 @@ def get_highest_ten_days(symbol):
     date_output = date_10.strftime(date_output_format)
 
     query = '''
-        SELECT date, printf("%.2f", MAX(close)) 
+        SELECT date, ROUND(MAX(close), 2) 
         FROM historical 
         WHERE date > "{0}" AND symbol = "{1}";
     '''
@@ -47,7 +47,7 @@ def get_average_one_year(symbol):
     date_output = date_1_year.strftime(date_output_format)
 
     query = '''
-        SELECT printf("%.2f", AVG(close)) 
+        SELECT ROUND(AVG(close), 2) 
         FROM historical 
         WHERE date > "{0}" AND symbol = "{1}";
     '''
@@ -60,7 +60,7 @@ def get_lowest_one_year(symbol):
     date_output = date_1_year.strftime(date_output_format)
 
     query = '''
-        SELECT date, printf("%.2f", MIN(close)) 
+        SELECT date, ROUND(MIN(close), 2) 
         FROM historical 
         WHERE date > "{0}" AND symbol = "{1}";
     '''
@@ -76,7 +76,7 @@ def get_avg_low(symbol):
     date_output = date_1_year.strftime(date_output_format)
 
     query = '''
-    SELECT h.symbol AS sym, s.name, printf("%.2f", AVG(h.close))
+    SELECT h.symbol AS sym, s.name, ROUND(AVG(h.close), 2)
     FROM historical as h, stock as s 
     WHERE (
         SELECT AVG(close) 
