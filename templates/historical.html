@@ -7,11 +7,12 @@
 
 		<!-- Semantic UI -->
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
-		<script
-										 src="https://code.jquery.com/jquery-3.1.1.min.js"
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"
 		   	integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
 	 		crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+
+		<!-- d3 and timeseries -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
 		<script src="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.js"></script>
 		<link rel="stylesheet" type="text/css" href="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.css">	
@@ -34,68 +35,13 @@
 
 			<div class="ui grid">
 				<div class="four wide column">
-					<div class="ui mini statistic">
-						<div class="label">
-							Stocks with lower average price
-						</div>
-							<br/>
-						<div class="value">
-							{% if avg_low %}
-							<table class="ui very basic celled table">
-								<thead>
-									<tr>
-										<th style="font-size:.7em;"> Symbol </th>
-										<th style="font-size:.7em;" class="center aligned"> Name </th>
-										<th style="font-size:.7em;" class="right aligned"> Price </th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for symbol, name, price in avg_low %}
-									<tr>
-										<td style="font-size:.7em;"> <a href="/historical/{{symbol}}">
-												{{symbol}}
-										</a> </td>
-
-										<td style="font-size:.6em;" class="center aligned"> {{name}} </td>
-										<td style="font-size:.7em;" class="right aligned"> {{price}} </td>
-									</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-							{% else %}
-							No stocks match the criteria
-							{% endif %}
-						</div>
-					</div>
+					<div class="ui mini statistic" id="div_avg_low"> </div>
 				</div>
 
 				<div class="twelve wide column">
 					<div class="ui grid">
-						<div class="three column row">
-							<div class="column">
-								<div class="ui small green horizontal statistic">
-									<div class="label"> Highest in 10 days </div>
-									<div class="value"> {{high_10[0]}} {{high_10[1]}} </div>
-								</div>
-							</div>
-							<div class="column">
-								<div class="ui small yellow horizontal statistic">
-									<div class="label"> Average in 1 year </div>
-									<div class="value"> {{avg_1_year}} </div>
-								</div>
-							</div>
-							<div class="column">
-								<div class="ui small red horizontal statistic">
-									<div class="label"> Lowest in 1 year </div>
-									<div class="value"> {{low_1_year[0]}} {{low_1_year[1]}} </div>
-								</div>
-							</div>
-						</div>
+						<div class="three column row" id="div_high_low"> </div>
 						<div class="row">
-
-							<!-- <h1> Graph goes here </h1> -->
-							<!-- {{cleaned}} -->
-							<!-- <div class="chart" id='chart3'></div> -->
 							<div class="chart" id='chart'></div>
 						</div>
 					</div>
@@ -103,35 +49,41 @@
 			</div> <!-- grid -->
 		
 		</div> <!-- main container -->
-		<script>
+		<script type="text/javascript">
+
+			// ajax request to stats data
+			$.ajax({url: "/data/highlow/{{symbol}}", success: function(result) {
+				$("#div_high_low").html(result);
+			}});
 			
-			var data = {{ cleaned|tojson|safe }};
-			for (var x = 0; x < data.length; x++) 
-			{
-    			data[x].date = new Date(data[x].date);    
-			}
+			// draw the graph
+			$.ajax({url: "/data/graph/{{symbol}}", success: function(result) {
+				var data = JSON.parse(result);
+				for (var x = 0; x < data.length; x++) 
+				{
+					data[x].date = new Date(data[x].date);    
+				}
 
-			// var data2 = [
-			// 					{date:new Date('2016-01-01'),closePrice:120.1,diff:0},
-			// 					{date:new Date('2016-01-02'),closePrice:130.2,diff:10},
-			// 					{date:new Date('2016-01-03'),closePrice:110.3,diff:20}
-			// 				]
+				// var chart = d3.timeseries()
+				//          	.addSerie(data,{x:'date', y:'closePrice', diff:'diff'},{interpolate:'monotone',color:"#333"})
+				//            	.width(900)
+				
 
-			// var chart = d3.timeseries()
-   			//          	.addSerie(data,{x:'date', y:'closePrice', diff:'diff'},{interpolate:'monotone',color:"#333"})
-   			//            	.width(900)
-   			
+				// chart('#chart3')
 
-			// chart('#chart3')
+				var chart = d3.timeseries()
+							.addSerie(data,{x:'date',y:'closePrice'},{interpolate:'linear',color:"#a6cee3",label:"value"})
+							.addSerie(data.slice(90, 100),
+							{x:'date',y:'pred',ci_up:'ci_up',ci_down:'ci_down'},
+							{interpolate:'monotone',dashed:true,color:"#a6cee3",label:"prediction"})
+							.width(900)
 
-			var chart = d3.timeseries()
-          				.addSerie(data,{x:'date',y:'closePrice'},{interpolate:'linear',color:"#a6cee3",label:"value"})
-          				.addSerie(data.slice(90, 100),
-              			{x:'date',y:'pred',ci_up:'ci_up',ci_down:'ci_down'},
-              			{interpolate:'monotone',dashed:true,color:"#a6cee3",label:"prediction"})
-          				.width(900)
+				chart('#chart')
+			}});
 
-          	chart('#chart')
+			$.ajax({url: "/data/avglow/{{symbol}}", success: function(result) {
+				$("#div_avg_low").html(result);
+			}});
 		</script>
 	</body>
 </html>
