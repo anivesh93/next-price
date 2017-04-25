@@ -100,7 +100,9 @@ def get_historical_records(symbol):
     query = '''
         SELECT * 
         FROM historical 
-        WHERE SYMBOL = "{0}" AND date > '2015-01-01'; 
+        WHERE SYMBOL = "{0}" AND DATE > '2015-01-01'
+        -- ORDER BY DATE DESC
+        -- LIMIT 20
     '''
 
     return select(query.format(symbol))

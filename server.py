@@ -1,11 +1,13 @@
 import json
 import random
+import time
 
 from flask import Flask, render_template
 app = Flask(__name__)
 app.debug = True
 
 import db
+import Future_Predict
 
 @app.route('/')
 def index():
@@ -38,19 +40,37 @@ def hello(name=None):
 
 # Ajax endpoints
 @app.route('/data/historical_graph/<symbol>')
-def data_historical_graph(symbol=None):
+def data_historical_graph(symbol = None):
     rows = db.get_historical_records(symbol)
+    pStock = Future_Predict.predictStock("GOOGL", "2017-04-24")
+    print len(pStock)
     cleaned = []
     for row in rows:
         # print row[1], row[5]
         temp = {}
         temp["date"] = row[1]
         temp["closePrice"]  = row[5]
-        temp["pred"] = row[5] + random.randint(-2, 2)
-        temp["ci_up"] = 0
-        temp["ci_down"] = 0
+        # temp["pred"] = row[5] + random.randint(-2, 2)
         cleaned.append(temp)
 
+    lastdate1 = time.strptime(cleaned[len(cleaned)-1]["date"], "%Y-%m-%d")
+    for dic in pStock:
+        newdate1 = time.strptime(dic["date"], "%Y-%m-%d")
+        if lastdate1 < newdate1:
+            temp = {}
+            temp["date"] = dic["date"]
+            # temp["closePrice"] = 50
+            temp["pred"] = dic["prediction"]
+            temp["ci_up"] = 0
+            temp["ci_down"] = 0
+            cleaned.append(temp)
+        else:
+            for c in cleaned:
+                if c["date"] == dic["date"]:
+                    c["pred"] = dic["prediction"]
+                    # print c["pred"], dic["prediction"]
+
+    # print cleaned[-24:]
     return json.dumps(cleaned)
 
 @app.route('/data/highlow/<symbol>')
