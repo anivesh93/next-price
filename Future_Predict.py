@@ -9,7 +9,7 @@ from datetime import  timedelta, date
 
 
 
-def main(symbol,dt):
+def predictStock(symbol,dt):
 
     d = date(int(dt.split("-")[0]), int(dt.split("-")[1]), int(dt.split("-")[2]))
     startdate = d - timedelta(days=15)
@@ -55,11 +55,10 @@ def main(symbol,dt):
     if 'symbol' in finance.columns:
         finance.drop('symbol', axis=1, inplace=True)
 
-    predict = futurepredict(Traindata,Trainlabel, symbol, startdate)
+    predictedStock = futurepredict(Traindata,Trainlabel, symbol, startdate)
 
-    print(predict)
+    return predictedStock
 
 
+pStock = predictStock("GOOGL" ,"2017-04-24")
 
-if __name__ == '__main__':
-    main(sys.argv[1],sys.argv[2])

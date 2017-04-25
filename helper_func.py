@@ -13,8 +13,12 @@ from sklearn.svm import SVC, SVR
 import os
 import pandas.io.data
 from sklearn.neural_network import MLPClassifier
+from sklearn.externals import joblib
+from datetime import  timedelta, date
+
 
 def getStock(symbol, start, end):
+
 
     df = pd.io.data.get_data_yahoo(symbol, start, end)
 
@@ -104,16 +108,6 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
     model_name = model.__str__().split('(')[0].replace('Regressor', ' Regressor')
     print(model_name)
 
-
-    '''
-    if 'SVR' in model.__str__():
-        tuned_parameters = [{'kernel': ['rbf', 'polynomial'], 'gamma': [1e-3, 1e-4],
-                     'C': [1, 10, 100, 1000]},
-                    {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
-        model = GridSearchCV(SVC(C=1), tuned_parameters, cv=5,
-                       scoring='%s_weighted' % 'recall')
-    '''
-
     symbol, output_dir = output_params
 
     if(model_name == "MLPClassifier"):
@@ -122,6 +116,13 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
         trainlabels = trainl
 
     model.fit(train, trainlabels, *args, **kwargs)
+
+    from sklearn.externals import joblib
+
+    #fname = exec(symbol + " = '.pkl'")
+
+    if(model_name == "KNeighbors Regressor"):
+        joblib.dump(model, 'KNeighbors.pkl')
 
     for i in range(1,test.shape[0]+1):
         testd = test[i-1:i]
@@ -171,3 +172,50 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
     plt.clf()
 
     return pred
+
+
+def futurepredict(Testdata,Testlabel, symbol, startdate):
+
+    predict = []
+    date = startdate + timedelta(days=2)
+    model = joblib.load('data/KNeighbors.pkl')
+
+    for i in range(1,Testdata.shape[0]+22):
+
+        testd = Testdata[i-1:i]
+        if(i == 1):
+            predicted_value = model.predict(testd)
+            pred = np.array(predicted_value)
+        else:
+            predicted_value = model.predict(temptest)
+            pred = np.append(pred, predicted_value)
+
+        #print(date)
+        #print(predicted_value)
+
+        predict.append({"date":str(date),"prediction":predicted_value[0]})
+        date = date + timedelta(days=1)
+
+
+
+
+        d = {'$close':[testd[0,20],predicted_value]}
+        new_df = pd.DataFrame(d)
+        new_df.columns = ['close']
+        new_df = getReturns(new_df,symbol)
+        columns = new_df.columns
+        close = columns[-2]
+        returns = columns[-1]
+        addFeatures(new_df,close, returns, 1)
+        #print(new_df.shape)
+
+
+        temptest = np.array(testd[0,5:25])
+        for j in range(0,5):
+            temptest = np.append(temptest,new_df.iloc[1][j])
+
+        temptest = temptest.reshape(1,25)
+
+        Testdata = np.append(Testdata,np.array(temptest), axis =0)
+
+    return predict
