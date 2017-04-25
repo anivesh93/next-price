@@ -1,0 +1,31 @@
+<div class="label">
+	Stocks with lower average price
+</div>
+<br/>
+<div class="value"> 
+	{% if avg_low %}
+	<table class="ui very basic celled table">
+		<thead>
+			<tr>
+				<th style="font-size:.7em;"> Symbol </th>
+				<th style="font-size:.7em;" class="center aligned"> Name </th>
+				<th style="font-size:.7em;" class="right aligned"> Price </th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for symbol, name, price in avg_low %}
+			<tr>
+				<td style="font-size:.7em;"> <a href="/historical/{{symbol}}">
+						{{symbol}}
+					</a> </td>
+
+					<td style="font-size:.6em;" class="center aligned"> {{name}} </td>
+					<td style="font-size:.7em;" class="right aligned"> {{price}} </td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	No stocks match the criteria
+	{% endif %}
+</div>

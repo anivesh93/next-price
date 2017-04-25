@@ -26,14 +26,14 @@ CREATE TABLE IF NOT EXISTS realtime (
 );
 
 INSERT INTO stock VALUES
-	('GOOGL', 'Google Inc.'),
-	('YHOO', 'Yahoo Inc.'),
-	('MSFT', 'Microsoft Inc.'),
-	('AMZN', 'Amazon Inc.'),
-	('TWTR', 'Twitter Inc.'),
-	('FB', 'Facebook Inc.'),
-	('CSCO', 'Cisco'),
-	('BAC', 'Bank of America'),
+	('GOOGL', 'Alphabet Inc.'),
+	('YHOO', 'Yahoo! Inc.'),
+	('MSFT', 'Microsoft Corporation'),
+	('AMZN', 'Amazon.com, Inc.'),
+	('TWTR', 'Twitter Inc'),
+	('FB', 'Facebook, Inc.'),
+	('CSCO', 'Cisco Systems, Inc.'),
+	('BAC', 'Bank of America Corp'),
 	('AAPL', 'Apple Inc.'),
-	('AMD', 'Advanced Micro Devices');
+	('AMD', 'Advanced Micro Devices, Inc.');
 	
