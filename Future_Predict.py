@@ -61,4 +61,4 @@ def predictStock(symbol,dt):
 
 
 pStock = predictStock("GOOGL" ,"2017-04-24")
-
+print(pStock)

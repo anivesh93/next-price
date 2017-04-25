@@ -11,16 +11,16 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVC, SVR
 import os
-import pandas.io.data
 from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 from datetime import  timedelta, date
-
+import pandas_datareader.data as web
 
 def getStock(symbol, start, end):
 
 
-    df = pd.io.data.get_data_yahoo(symbol, start, end)
+
+    df = web.DataReader(symbol, 'yahoo', start, end)
 
     df = df[['Close']]
     df.columns.values[-1] = 'Close'
