@@ -21,10 +21,10 @@ def get_name(symbol):
 # return all stocks with the latest realtime price
 def get_stocks_realtime():
     query = '''
-        SELECT realtime.symbol, stock.name, ROUND(MAX(realtime.price), 2) 
+        SELECT stock.symbol, stock.name, ROUND(MAX(realtime.price), 2) 
         FROM realtime, stock
         WHERE realtime.symbol = stock.symbol
-        GROUP BY realtime.symbol;
+        GROUP BY stock.symbol;
     '''
     return select(query)
 
