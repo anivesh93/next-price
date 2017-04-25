@@ -37,8 +37,8 @@ def hello(name=None):
     return render_template('hello.html', name=name)
 
 # Ajax endpoints
-@app.route('/data/graph/<symbol>')
-def data_graph(symbol=None):
+@app.route('/data/historical_graph/<symbol>')
+def data_historical_graph(symbol=None):
     rows = db.get_historical_records(symbol)
     cleaned = []
     for row in rows:

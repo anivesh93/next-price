@@ -57,7 +57,7 @@
 			}});
 			
 			// draw the graph
-			$.ajax({url: "/data/graph/{{symbol}}", success: function(result) {
+			$.ajax({url: "/data/historical_graph/{{symbol}}", success: function(result) {
 				var data = JSON.parse(result);
 				for (var x = 0; x < data.length; x++) 
 				{
