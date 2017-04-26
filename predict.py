@@ -20,7 +20,7 @@ def main(output_dir):
     for symbol in stock_symbols:
         try:
 
-            dataset = getStock(symbol, '2014-01-01', '2016-01-01')
+            dataset = getStock(symbol, '2014-01-01', '2016-04-24')
 
 
             #apply roll mean delayed returns

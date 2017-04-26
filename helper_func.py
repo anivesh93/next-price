@@ -11,16 +11,16 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVC, SVR
 import os
-import pandas.io.data
 from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 from datetime import  timedelta, date
-
+import pandas_datareader.data as web
 
 def getStock(symbol, start, end):
 
 
-    df = pd.io.data.get_data_yahoo(symbol, start, end)
+
+    df = web.DataReader(symbol, 'yahoo', start, end)
 
     df = df[['Close']]
     df.columns.values[-1] = 'Close'
@@ -121,8 +121,8 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
 
     #fname = exec(symbol + " = '.pkl'")
 
-    if(model_name == "KNeighbors Regressor"):
-        joblib.dump(model, 'KNeighbors.pkl')
+    filename = symbol +"_"+ model_name +".pkl"
+    joblib.dump(model, filename)
 
     for i in range(1,test.shape[0]+1):
         testd = test[i-1:i]
@@ -174,11 +174,12 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
     return pred
 
 
-def futurepredict(Testdata,Testlabel, symbol, startdate):
+def futurepredict(Testdata,Testlabel, symbol, startdate, model_name):
 
     predict = []
     date = startdate + timedelta(days=2)
-    model = joblib.load('data/KNeighbors.pkl')
+    filename = symbol +"_"+ model_name +".pkl"
+    model = joblib.load("data/"+filename)
 
     for i in range(1,Testdata.shape[0]+22):
 

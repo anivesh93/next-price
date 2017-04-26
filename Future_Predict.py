@@ -9,7 +9,7 @@ from datetime import  timedelta, date
 
 
 
-def predictStock(symbol,dt):
+def predictStock(symbol,dt,):
 
     d = date(int(dt.split("-")[0]), int(dt.split("-")[1]), int(dt.split("-")[2]))
     startdate = d - timedelta(days=15)
@@ -54,12 +54,20 @@ def predictStock(symbol,dt):
 
     if 'symbol' in finance.columns:
         finance.drop('symbol', axis=1, inplace=True)
-
-    predictedStock = futurepredict(Traindata,Trainlabel, symbol, startdate)
+    '''
+    RandomForest Regressor
+    SVR
+    Bagging Regressor
+    AdaBoost Regressor
+    KNeighbors Regressor
+    GradientBoosting Regressor
+    MLPClassifier
+    '''
+    model_name = "GradientBoosting Regressor"
+    predictedStock = futurepredict(Traindata,Trainlabel, symbol, startdate,model_name)
 
     return predictedStock
 
-if __name__ == '__main__':
-    pStock = predictStock("GOOGL", "2017-04-24")
-    print(pStock)
 
+pStock = predictStock("GOOGL" ,"2017-04-24")
+print(pStock)
