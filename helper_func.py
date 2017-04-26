@@ -119,8 +119,6 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
 
     from sklearn.externals import joblib
 
-    #fname = exec(symbol + " = '.pkl'")
-
     filename = symbol +"_"+ model_name +".pkl"
     joblib.dump(model, filename)
 
@@ -136,8 +134,6 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
             if(model_name == "MLPClassifier"):
                 predicted_value = predicted_value.astype(np.float)
             pred = np.append(pred, predicted_value)
-
-
 
 
 

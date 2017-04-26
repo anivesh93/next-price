@@ -63,7 +63,7 @@ def predictStock(symbol,dt,):
     GradientBoosting Regressor
     MLPClassifier
     '''
-    model_name = "GradientBoosting Regressor"
+    model_name = "MLPClassifier"
     predictedStock = futurepredict(Traindata,Trainlabel, symbol, startdate,model_name)
 
     return predictedStock
