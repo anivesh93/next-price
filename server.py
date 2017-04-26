@@ -42,7 +42,7 @@ def hello(name=None):
 @app.route('/data/historical_graph/<symbol>')
 def data_historical_graph(symbol = None):
     rows = db.get_historical_records(symbol)
-    pStock = Future_Predict.predictStock("GOOGL", "2017-04-24")
+    pStock = Future_Predict.predictStock(symbol, "2017-04-24")
     print len(pStock)
     cleaned = []
     for row in rows:
