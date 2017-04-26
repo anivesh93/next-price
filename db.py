@@ -95,12 +95,24 @@ def get_avg_low(symbol):
 
     return select(query.format(date_output, symbol))
 
+# return the historical data for a symbol from 2015
 def get_historical_records(symbol):
-
     query = '''
         SELECT * 
         FROM historical 
         WHERE SYMBOL = "{0}" AND DATE > '2015-01-01'
+        -- ORDER BY DATE DESC
+        -- LIMIT 20
+    '''
+
+    return select(query.format(symbol))
+
+# return all available realtime data for a symbol
+def get_realtime_records(symbol):
+    query = '''
+        SELECT * 
+        FROM realtime 
+        WHERE SYMBOL = "{0}" 
         -- ORDER BY DATE DESC
         -- LIMIT 20
     '''

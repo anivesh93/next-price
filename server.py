@@ -73,6 +73,19 @@ def data_historical_graph(symbol = None):
     # print cleaned[-24:]
     return json.dumps(cleaned)
 
+@app.route('/data/realtime_graph/<symbol>')
+def data_realtime_graph(symbol = None):
+    rows = db.get_realtime_records(symbol)
+    cleaned = []
+    for row in rows:
+        temp = {}
+        temp["date"] = row[1] + ' ' + row[2]
+        temp["price"]  = row[3]
+        # temp["pred"] = row[5] + random.randint(-2, 2)
+        cleaned.append(temp)
+
+    return json.dumps(cleaned)
+
 @app.route('/data/highlow/<symbol>')
 def highlow(symbol=None):
     high_10 = db.get_highest_ten_days(symbol)[0]
