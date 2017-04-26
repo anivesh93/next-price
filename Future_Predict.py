@@ -20,7 +20,7 @@ def predictStock(symbol,dt,):
     maxdelta = 30
 
     delta = range(8, maxdelta)
-    print('Delta days accounted: ', max(delta))
+    #print('Delta days accounted: ', max(delta))
 
 
     dataset = getStock(symbol, startdate, enddate)
