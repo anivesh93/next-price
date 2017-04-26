@@ -68,6 +68,3 @@ def predictStock(symbol,dt,):
 
     return predictedStock
 
-
-pStock = predictStock("GOOGL" ,"2017-04-24")
-print(pStock)

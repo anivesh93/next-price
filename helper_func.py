@@ -175,21 +175,30 @@ def futurepredict(Testdata,Testlabel, symbol, startdate, model_name):
 
     predict = []
     date = startdate + timedelta(days=2)
+
     filename = symbol +"_"+ model_name +".pkl"
     model = joblib.load("data/"+filename)
+
+    if(model_name == "MLPClassifier"):
+        Testlabel = np.asarray(Testlabel, dtype="|S6")
+    else:
+        Testlabel = Testlabel
+
 
     for i in range(1,Testdata.shape[0]+22):
 
         testd = Testdata[i-1:i]
         if(i == 1):
             predicted_value = model.predict(testd)
+            if(model_name == "MLPClassifier"):
+                predicted_value = predicted_value.astype(np.float)
             pred = np.array(predicted_value)
         else:
             predicted_value = model.predict(temptest)
+            if(model_name == "MLPClassifier"):
+                predicted_value = predicted_value.astype(np.float)
             pred = np.append(pred, predicted_value)
 
-        #print(date)
-        #print(predicted_value)
 
         predict.append({"date":str(date),"prediction":predicted_value[0]})
         date = date + timedelta(days=1)
