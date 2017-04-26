@@ -113,8 +113,19 @@ def get_realtime_records(symbol):
         SELECT * 
         FROM realtime 
         WHERE SYMBOL = "{0}" 
-        -- ORDER BY DATE DESC
-        -- LIMIT 20
+        -- ORDER BY date, time DESC
+        -- LIMIT 15
+    '''
+
+    return select(query.format(symbol))
+
+def get_realtime_15(symbol):
+    query = '''
+        SELECT * 
+        FROM realtime 
+        WHERE SYMBOL = "{0}" 
+        ORDER BY date, time DESC
+        LIMIT 15
     '''
 
     return select(query.format(symbol))
