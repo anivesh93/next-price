@@ -1,3 +1,7 @@
+# written by: Anivesh
+# assisted by: Soundar
+# debugged by: Sanjay
+
 import urllib2
 import sqlite3
 from datetime import datetime

@@ -1,3 +1,7 @@
+# written by: Sanjay
+# assisted by: Mayank
+# debugged by: Shreyas
+
 from yahoo_finance import Share
 from pprint import pprint
 from datetime import datetime

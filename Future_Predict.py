@@ -1,3 +1,7 @@
+# written by: Mayank
+# assisted by: Shreyas
+# debugged by: Sanjay
+
 from __future__ import print_function
 from helper_func import addFeatures, performRegression, getStock,futurepredict, getRealTimePredict
 import sys

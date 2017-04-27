@@ -1,3 +1,7 @@
+# written by: Mayank
+# assisted by: Shreyas
+# debugged by: Ashish
+
 import sqlite3 as sql
 
 

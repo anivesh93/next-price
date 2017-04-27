@@ -1,3 +1,6 @@
+# written by: Shreyas
+# assisted by: Mayank
+# debugged by: Anivesh
 import sqlite3 as sql
 import random
 from datetime import datetime, timedelta
