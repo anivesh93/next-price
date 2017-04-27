@@ -12,6 +12,7 @@ def select(query):
 
     return data
 
+# executes a query on the database that is of the update type
 def update(query):
     conn = sql.connect('data/stocks.db')
     cursor = conn.cursor()
@@ -22,6 +23,7 @@ def update(query):
         print e
     conn.close()
 
+# insert values to the stock table
 def insert_stock(symbol, name):
     query = 'INSERT INTO stock values ("{0}", "{1}");'
     update(query.format(symbol, name))
@@ -31,6 +33,7 @@ def get_name(symbol):
     query = 'SELECT name FROM stock WHERE symbol="{0}";';
     return select(query.format(symbol))
 
+# get all the symbols and the stock names from the stock table
 def get_stocks():
     query = 'SELECT * FROM stock;'
     return select(query)
@@ -136,6 +139,7 @@ def get_realtime_records(symbol):
 
     return select(query.format(symbol))
 
+# return the last 15 records from the realtime table for a particular symbol
 def get_realtime_15(symbol):
     query = '''
         SELECT * 

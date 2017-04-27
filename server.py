@@ -13,47 +13,48 @@ import Future_Predict
 from data.historical import insert_data
 import predict
 
+# endpoint for index.html
 @app.route('/')
 def index():
+    # get the stock information present in the stock table
     stocks_latest = db.get_stocks()
     return render_template('index.html', stocks=stocks_latest)
 
+# endpoint for realtime page
 @app.route('/realtime/<symbol>')
 def realtime(symbol=None):
     name = db.get_name(symbol)[0][0]
+    return render_template('realtime.html', symbol=symbol, name=name)
 
-    return render_template(
-            'realtime.html', 
-            symbol=symbol, 
-            name=name)
-
+# endpoint for historical page
 @app.route('/historical/<symbol>')
 def historical(symbol=None):
     name = db.get_name(symbol)[0][0]
+    return render_template('historical.html', symbol=symbol, name=name)
 
-    return render_template(
-            'historical.html', 
-            symbol=symbol, 
-            name=name)
-
+# endpoint for adding stock
 @app.route('/add')
 def add(symbol=None):
     return render_template('add.html')
 
-# This is the callback when the user clicks on sumbit
+# This is the callback when the user clicks on sumbit on the add stock page
 @app.route('/add_stock')
 def add_stock():
+    # get the parameters from the URL
     symbol = request.args.get('symbol')
     name = request.args.get('name')
 
+    # insert into the stock tabl
     db.insert_stock(symbol, name)
+    # insert historical data from the API to the historical table
     insert_data(symbol, 'data/')
 
-    # add model training function here
+    # call model training function
     predict.addstock(symbol, "hist")
 
     return "Stock added and model trained."
 
+# hello world page for testing purposes
 @app.route('/hello/')
 @app.route('/hello/<name>')
 def hello(name=None):
@@ -179,18 +180,23 @@ def data_realtime_graph(symbol = None):
 
     return json.dumps(wrapper_dic)
 
+# AJAX endpoint for queries #2, #3, #4
 @app.route('/data/highlow/<symbol>')
 def highlow(symbol=None):
+
+    # perform the queries on the database
     high_10 = db.get_highest_ten_days(symbol)[0]
     avg_1_year = db.get_average_one_year(symbol)[0][0]
     low_1_year = db.get_lowest_one_year(symbol)[0]
 
+    # return the result
     return render_template(
             'high_low.html', 
             high_10=high_10,
             avg_1_year=avg_1_year,
             low_1_year=low_1_year)
 
+# AJAX endpoint for getting the query #5
 @app.route('/data/avglow/<symbol>')
 def avglow(symbol=None):
     avg_low = db.get_avg_low(symbol)
@@ -198,6 +204,8 @@ def avglow(symbol=None):
             'avg_low.html',
             avg_low=avg_low)
 
+
+# AJAX endpoint to get the latest price from yahoo finance API
 @app.route('/data/realtime')
 def data_realtime():
     url = r'http://finance.yahoo.com/d/quotes.csv?s={0}&f={1}'
