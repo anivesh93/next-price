@@ -7,8 +7,7 @@
 
 		<!-- Semantic UI -->
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
-		<script
-										 src="https://code.jquery.com/jquery-3.1.1.min.js"
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"
 		   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
 	 crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
@@ -36,11 +35,11 @@
 							<th class="center aligned">Name</th>
 							<th class="right aligned">Price</th>
 						</thead>	
-						{% for symbol, name, price in stocks %}
+						{% for symbol, name in stocks %}
 						<tr>
 							<td> <a href="/realtime/{{symbol}}"> {{symbol}} </a> </td>
 							<td class="center aligned"> {{name}} </td>
-							<td class="right aligned"> {{ price }} </td>
+							<td class="right aligned" id="{{symbol}}"> -- </td>
 						</tr>
 						{% endfor %}
 					</table>
@@ -52,6 +51,41 @@
 			</div>
 
 		</div>
+
+		<script type="text/javascript">
+
+		var stocks = {{stocks|tojson|safe}};
+		
+		var symbols = []
+		for (var row of stocks) {
+			symbols.push(row[0]);
+		}
+
+		$.ajax({url: "/data/realtime?s=" + symbols.join("+") + "&f=snl1",
+			success: function(response) {
+
+				response = JSON.parse(response);
+				for (var row in response) {
+					$("#"+response[row][0]).html(response[row][1]);
+				}
+			}
+		});
+
+		window.setInterval(function() {
+
+			$.ajax({url: "/data/realtime?s=" + symbols.join("+") + "&f=snl1",
+				success: function(response) {
+
+					response = JSON.parse(response);
+					for (var row in response) {
+						$("#"+response[row][0]).html(response[row][1]);
+					}
+				}
+			});
+			
+		}, 60000);
+
+		</script>
 
 	</body>
 </html>

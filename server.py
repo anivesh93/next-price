@@ -1,6 +1,7 @@
 import json
 import random
 import time
+import urllib2
 
 from flask import Flask, render_template, request
 app = Flask(__name__)
@@ -13,7 +14,7 @@ import predict
 
 @app.route('/')
 def index():
-    stocks_latest = db.get_stocks_realtime()
+    stocks_latest = db.get_stocks()
     return render_template('index.html', stocks=stocks_latest)
 
 @app.route('/realtime/<symbol>')
@@ -159,6 +160,26 @@ def avglow(symbol=None):
     return render_template(
             'avg_low.html',
             avg_low=avg_low)
+
+@app.route('/data/realtime')
+def data_realtime():
+    url = r'http://finance.yahoo.com/d/quotes.csv?s={0}&f={1}'
+    symbols = request.args.get('s')
+    response_format = 'sl1'
+
+    try:
+        response = urllib2.urlopen(url.format(
+            symbols.replace(' ', '+'), response_format))
+    except Exception as e:
+        print e
+        return
+
+    results = []
+    for line in response:
+        tokens = line.strip().split(',')
+        results.append([tokens[0].strip('"'), tokens[1]]) 
+
+    return json.dumps(results)
 
 def main():
     app.run()

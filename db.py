@@ -31,6 +31,9 @@ def get_name(symbol):
     query = 'SELECT name FROM stock WHERE symbol="{0}";';
     return select(query.format(symbol))
 
+def get_stocks():
+    query = 'SELECT * FROM stock;'
+    return select(query)
 
 # return all stocks with the latest realtime price
 def get_stocks_realtime():
