@@ -90,7 +90,24 @@ def data_historical_graph(symbol = None):
                     c["pred"] = dic["prediction"]
                     # print c["pred"], dic["prediction"]
 
-    return json.dumps(cleaned)
+    data = []
+    for x in xrange(len(pStock)):
+    	data.append(pStock[x]["prediction"])
+
+   	# data = data[::-1]
+    print len(data)
+    x = np.arange(len(pStock))
+    print len(x)
+    y = np.array(data)
+    print y
+    z = np.polyfit(x,y,1)
+    print "{0}x + {1}".format(*z)
+
+    wrapper_dic = {}
+    wrapper_dic["cleaned"] = cleaned
+    wrapper_dic["slope"] = z[0]
+    
+    return json.dumps(wrapper_dic)
 
 @app.route('/data/realtime_graph/<symbol>')
 def data_realtime_graph(symbol = None):
@@ -133,22 +150,28 @@ def data_realtime_graph(symbol = None):
                     c["pred"] = dic["prediction"]
 
     data = []
-    for x in xrange(len(cleaned)-1, len(cleaned)-29, -1):
-    	data.append(cleaned[x]["pred"])
+    for x in xrange(len(pStock)):
+    	data.append(pStock[x]["prediction"])
+
+    # data = data[::-1]
     print len(data)
-    x = np.arange(0,28)
+    x = np.arange(len(pStock))
     print len(x)
     y = np.array(data)
     print y
     z = np.polyfit(x,y,1)
     print "{0}x + {1}".format(*z)
 
+    wrapper_dic = {}
+    wrapper_dic["cleaned"] = cleaned
+    wrapper_dic["slope"] = z[0]
+
     # print cleaned[-11]["date"], cleaned[-11]["price"] 
     # print cleaned[-1]["date"], cleaned[-1]["pred"]
     # print cleaned[-20:]
     # print cleaned[len(cleaned)-40:len(cleaned)-20]
 
-    return json.dumps(cleaned)
+    return json.dumps(wrapper_dic)
 
 @app.route('/data/highlow/<symbol>')
 def highlow(symbol=None):

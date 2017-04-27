@@ -64,8 +64,10 @@
 
 			// draw the graph
 			$.ajax({url: "/data/realtime_graph/{{symbol}}", success: function(result) {
-				var data = JSON.parse(result);
+				var wrapper = JSON.parse(result);
 				
+				data = wrapper["cleaned"]
+				slope = wrapper["slope"]
 				//convert dates fetched from Flask to Javascripts format
 				for (var x = 0; x < data.length; x++) 
 				{
@@ -74,13 +76,21 @@
 
 				function printAdvice() 
 				{
+					// var res;
+					// if (data[data.length-1].pred > data[data.length-11].price) //check latest prediction and latest stock price
+					// {	res = "SELL"; }
+					// else if (data[data.length-1].pred < data[data.length-11].price)
+					// {	res = "BUY"; }
+					// else
+					// {	res = "HOLD"; }
+
 					var res;
-					if (data[data.length-1].pred > data[data.length-11].price) //check latest prediction and latest stock price
-					{	res = "SELL"; }
-					else if (data[data.length-1].pred < data[data.length-11].price)
-					{	res = "BUY"; }
+					if (slope > 0.02)
+					{	res = "SELL, as the slope of the trend line is : " + slope + "(> 0.02)"; }
+					else if (slope < 0.02)
+					{	res = "BUY, as the slope of the trend line is : " + slope + "(< 0.02)"; }
 					else
-					{	res = "HOLD"; }
+					{	res = "HOLD, as the slope of the trend line is : " + slope; }
 
 					return res;
 				}
