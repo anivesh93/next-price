@@ -1,6 +1,7 @@
 import json
 import random
 import time
+import numpy as np
 
 from flask import Flask, render_template, request
 app = Flask(__name__)
@@ -109,7 +110,7 @@ def data_realtime_graph(symbol = None):
     lastdate1 = time.strptime(cleaned[len(cleaned)-1]["date"], "%Y-%m-%d %H:%M")
     # print lastdate1
 
-    print len(cleaned)
+    # print len(cleaned)
     for dic in pStock:
         newdate1 = time.strptime(dic["date"], "%Y-%m-%d %H:%M:%S")
         lo = time.strptime('2017-04-26 15:50:00', "%Y-%m-%d %H:%M:%S")
@@ -131,8 +132,20 @@ def data_realtime_graph(symbol = None):
                 if cdate == ddate:
                     c["pred"] = dic["prediction"]
 
-    print len(cleaned)
-    print cleaned[-20:]
+    data = []
+    for x in xrange(len(cleaned)-1, len(cleaned)-29, -1):
+    	data.append(cleaned[x]["pred"])
+    print len(data)
+    x = np.arange(0,28)
+    print len(x)
+    y = np.array(data)
+    print y
+    z = np.polyfit(x,y,1)
+    print "{0}x + {1}".format(*z)
+
+    # print cleaned[-11]["date"], cleaned[-11]["price"] 
+    # print cleaned[-1]["date"], cleaned[-1]["pred"]
+    # print cleaned[-20:]
     # print cleaned[len(cleaned)-40:len(cleaned)-20]
 
     return json.dumps(cleaned)
