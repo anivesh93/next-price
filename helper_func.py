@@ -16,7 +16,10 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 from datetime import  timedelta, date
 import pandas_datareader.data as web
+# please don't delete the next line, you can uncomment the above line
+# import pandas.io.data as web
 import sqlite3
+import requests
 
 def getStock(symbol, start, end):
 
@@ -50,7 +53,8 @@ def getRealTime(symbol):
 def getRealTimePredict(symbol):
 
     con = sqlite3.connect("data/stocks.db")
-    query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" ORDER BY DATE,TIME DESC LIMIT 15'
+    query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" ORDER BY DATE DESC LIMIT 15'
+    # query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" LIMIT 15'
     df = pd.read_sql_query(query.format(symbol), con)
 
     dfa = df[['price']]

@@ -61,7 +61,7 @@ def hello(name=None):
 def data_historical_graph(symbol = None):
     rows = db.get_historical_records(symbol)
     pStock = Future_Predict.predictStock(symbol, "2017-04-24", "hist")
-    print len(pStock)
+    # print len(pStock)
     cleaned = []
     for row in rows:
         # print row[1], row[5]
@@ -94,6 +94,10 @@ def data_historical_graph(symbol = None):
 @app.route('/data/realtime_graph/<symbol>')
 def data_realtime_graph(symbol = None):
     rows = db.get_realtime_records(symbol)
+
+    rows = rows[:-9]
+    pStock = Future_Predict.predictStock(symbol, "2017-04-21", "real")
+    # print rows[0]
     cleaned = []
     for row in rows:
         temp = {}
@@ -102,6 +106,37 @@ def data_realtime_graph(symbol = None):
         # temp["pred"] = row[5] + random.randint(-2, 2)
         cleaned.append(temp)
 
+    # print len(pStock)
+    lastdate1 = time.strptime(cleaned[len(cleaned)-1]["date"], "%Y-%m-%d %H:%M")
+    # print lastdate1
+
+    print len(cleaned)
+    for dic in pStock:
+        newdate1 = time.strptime(dic["date"], "%Y-%m-%d %H:%M:%S")
+        lo = time.strptime('2017-04-26 15:50:00', "%Y-%m-%d %H:%M:%S")
+        # print newdate1
+        # if lastdate1 < newdate1:
+        if newdate1 > lo:
+            # print newdate1
+            temp = {}
+            temp["date"] = dic["date"]
+            # temp["closePrice"] = 50
+            temp["pred"] = dic["prediction"]
+            temp["ci_up"] = 0
+            temp["ci_down"] = 0
+            cleaned.append(temp)
+        else:
+            for c in cleaned:
+                cdate = time.strptime(c["date"], "%Y-%m-%d %H:%M")
+                ddate = time.strptime(dic["date"], "%Y-%m-%d %H:%M:%S")
+                if cdate == ddate:
+                    c["pred"] = dic["prediction"]
+
+    print len(cleaned)
+    print cleaned[-20:]
+    # print cleaned[len(cleaned)-40:len(cleaned)-20]
+    # print cleaned[len(cleaned)-10:len(cleaned)-1]
+    # print pStock[0], pStock[28]
     return json.dumps(cleaned)
 
 @app.route('/data/highlow/<symbol>')
