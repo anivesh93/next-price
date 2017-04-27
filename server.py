@@ -61,12 +61,11 @@ def hello(name=None):
 # Ajax endpoints
 @app.route('/data/historical_graph/<symbol>')
 def data_historical_graph(symbol = None):
-    rows = db.get_historical_records(symbol)
-    pStock = Future_Predict.predictStock(symbol, "2017-04-24", "hist")
+    rows = db.get_historical_records(symbol) #get historical data from db
+    pStock = Future_Predict.predictStock(symbol, "2017-04-24", "hist") #get generated predictions
     # print len(pStock)
-    cleaned = []
+    cleaned = [] #array of dictionaries, each dictionary has data and closePrice pairs
     for row in rows:
-        # print row[1], row[5]
         temp = {}
         temp["date"] = row[1]
         temp["closePrice"]  = row[5]
@@ -76,7 +75,7 @@ def data_historical_graph(symbol = None):
     lastdate1 = time.strptime(cleaned[len(cleaned)-1]["date"], "%Y-%m-%d")
     for dic in pStock:
         newdate1 = time.strptime(dic["date"], "%Y-%m-%d")
-        if lastdate1 < newdate1:
+        if lastdate1 < newdate1: #this is to see if predicted data and actual data have overlap
             temp = {}
             temp["date"] = dic["date"]
             # temp["closePrice"] = 50
@@ -90,7 +89,6 @@ def data_historical_graph(symbol = None):
                     c["pred"] = dic["prediction"]
                     # print c["pred"], dic["prediction"]
 
-    # print cleaned[-24:]
     return json.dumps(cleaned)
 
 @app.route('/data/realtime_graph/<symbol>')
@@ -99,7 +97,6 @@ def data_realtime_graph(symbol = None):
 
     rows = rows[:-9]
     pStock = Future_Predict.predictStock(symbol, "2017-04-21", "real")
-    # print rows[0]
     cleaned = []
     for row in rows:
         temp = {}
@@ -137,8 +134,7 @@ def data_realtime_graph(symbol = None):
     print len(cleaned)
     print cleaned[-20:]
     # print cleaned[len(cleaned)-40:len(cleaned)-20]
-    # print cleaned[len(cleaned)-10:len(cleaned)-1]
-    # print pStock[0], pStock[28]
+
     return json.dumps(cleaned)
 
 @app.route('/data/highlow/<symbol>')

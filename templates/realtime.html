@@ -61,6 +61,8 @@
 			// draw the graph
 			$.ajax({url: "/data/realtime_graph/{{symbol}}", success: function(result) {
 				var data = JSON.parse(result);
+				
+				//convert dates fetched from Flask to Javascripts format
 				for (var x = 0; x < data.length; x++) 
 				{
 					data[x].date = new Date(data[x].date);    

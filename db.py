@@ -109,7 +109,7 @@ def get_avg_low(symbol):
 
     return select(query.format(date_output, symbol))
 
-# return the historical data for a symbol from 2015
+# return the historical data for a symbol from 2015 onwards
 def get_historical_records(symbol):
     query = '''
         SELECT * 
