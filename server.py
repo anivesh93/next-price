@@ -9,6 +9,7 @@ app.debug = True
 import db
 import Future_Predict
 from data.historical import insert_data
+import predict
 
 @app.route('/')
 def index():
@@ -47,6 +48,7 @@ def add_stock():
     insert_data(symbol, 'data/')
 
     # add model training function here
+    predict.addstock(symbol, "hist")
 
     return "Stock added and model trained."
 

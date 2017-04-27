@@ -16,8 +16,6 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 from datetime import  timedelta, date
 import pandas_datareader.data as web
-# please don't delete the next line, you can uncomment the above line
-# import pandas.io.data as web
 import sqlite3
 import requests
 
