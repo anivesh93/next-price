@@ -18,6 +18,7 @@ from datetime import  timedelta, date
 import pandas_datareader.data as web
 import sqlite3
 
+#gets historical data from yahoo finance for the given company within the given time period
 def getStock(symbol, start, end):
 
     df = web.DataReader(symbol, 'yahoo', start, end)
@@ -29,6 +30,7 @@ def getStock(symbol, start, end):
 
     return df
 
+# gets real time data from the database
 def getRealTime(symbol):
 
     con = sqlite3.connect("data/stocks.db")
@@ -47,6 +49,7 @@ def getRealTime(symbol):
     con.close()
     return df
 
+#gets few real time data to start predicting
 def getRealTimePredict(symbol):
 
     con = sqlite3.connect("data/stocks.db")
@@ -66,6 +69,7 @@ def getRealTimePredict(symbol):
     con.close()
     return df,date
 
+#computes returns using the closing values
 def getReturns(df,symbol):
 
 
@@ -75,6 +79,7 @@ def getReturns(df,symbol):
 
     return df
 
+# adds features like time, rolling mean and Exponential Moving average
 def addFeatures(dataframe, adjclose, returns, n):
 
     return_n = adjclose[9:] + "Time" + str(n)
@@ -86,10 +91,10 @@ def addFeatures(dataframe, adjclose, returns, n):
     exp_ma = returns[7:] + "ExponentMovingAvg" + str(n)
     dataframe[exp_ma] = pd.ewma(dataframe[returns], halflife=30)
 
-# REGRESSION
+# Perform training
 def performRegression(traindata, testdata, split, symbol, output_dir, data_type):
 
-    #features = dataset.columns[1:]
+
     index = int(np.floor(traindata.shape[0]*split))
     train , test = traindata[:index], traindata[index:]
 
@@ -99,10 +104,10 @@ def performRegression(traindata, testdata, split, symbol, output_dir, data_type)
 
     out_params = (symbol, output_dir)
 
-    #output = dataset.columns[0]
 
     predicted_values = []
 
+    #Perform training for all the following classifiers
     classifiers = [
         RandomForestRegressor(n_estimators=10, n_jobs=-1),
         SVR(C=100000, kernel='rbf', epsilon=0.1, gamma=1, degree=2),
@@ -136,7 +141,7 @@ def performRegression(traindata, testdata, split, symbol, output_dir, data_type)
 
     return mean_squared_errors, r2_scores
 
-
+# fit the data for each regression model and save the model
 def benchmark_model(model, train, test, trainl, testl, output_params, symbol, data_type, *args, **kwargs):
 
     print('-'*80)
@@ -204,7 +209,7 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol, da
 
     return pred
 
-
+# predict the future stock values given the current values
 def futurepredict(Testdata,Testlabel, symbol, startdate, model_name,data_type):
 
     predict = []
@@ -255,7 +260,6 @@ def futurepredict(Testdata,Testlabel, symbol, startdate, model_name,data_type):
         close = columns[-2]
         returns = columns[-1]
         addFeatures(new_df,close, returns, 1)
-        #print(new_df.shape)
 
 
         temptest = np.array(testd[0,5:25])
