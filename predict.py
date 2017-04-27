@@ -13,6 +13,7 @@ import numpy as np
 # Call this function in the following way to train a new model for a particu;ar company
 # addstock("AIQ", "hist")
 
+#Train the system to create models for prediction
 def addstock(symbol, data_type):
 
     scores = {}
@@ -27,23 +28,23 @@ def addstock(symbol, data_type):
 
     for symbol in stock_symbols:
         try:
-
+            #pull data from the database for training
             if(data_type == "hist"):
                 dataset = getStock(symbol, '2015-01-01', '2017-04-24')
             else:
                 dataset = getRealTime(symbol)
 
 
-            #apply roll mean delayed returns
-            # Add features
+            #add features for each record
             columns = dataset.columns
             close = columns[-2]
             returns = columns[-1]
 
             addFeatures(dataset, close, returns, 1)
 
-            finance = dataset.iloc[1:,:] # computation of returns and moving means introduces NaN which are nor removed
+            finance = dataset.iloc[1:,:]
 
+            #create the feature matrix
             previ = 2
             Traindata = np.array(dataset.ix[1:6,:].as_matrix().reshape(1,25))
 
@@ -63,6 +64,7 @@ def addstock(symbol, data_type):
             if 'symbol' in finance.columns:
                 finance.drop('symbol', axis=1, inplace=True)
 
+            #Train the system and compute errors
             mean_squared_errors, r2_scores = performRegression(Traindata,Trainlabel, 0.95, symbol, "output_graphs/", data_type)
 
             scores[symbol] = [mean_squared_errors, r2_scores]
