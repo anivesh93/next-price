@@ -14,8 +14,8 @@ import os
 from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 from datetime import  timedelta, date
-# import pandas_datareader.data as web
-import pandas.io.data as web
+import pandas_datareader.data as web
+# import pandas.io.data as web
 
 def getStock(symbol, start, end):
 

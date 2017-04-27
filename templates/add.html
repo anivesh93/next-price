@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Semantic UI -->
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+		  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+	crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+
+		<!-- d3 and timeseries -->
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+		<script src="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://rawgit.com/mcaule/d3-timeseries/master/src/d3_timeseries.css">	
+	</head>
+
+	<body>
+		<div class="ui inverted segment">
+			<div class="ui container">
+				<div class="ui inverted secondary pointing menu">
+					<a class="item" href="/"> next-price </a>
+					<a class="item" href="/"> Realtime </a>
+					<a class="item" href="/"> Historical </a>
+					<a class="active item" href="/add"> Add Stock </a>
+				</div>
+			</div>
+		</div>
+
+		<div class="ui main container">
+
+			<h1 class="huge header" align="right" style="font-size:3em;"> Add Stock </h1>
+			<div id="addform" class="ui form" name="addform">
+				<div class="field">
+					<label>Symbol</label>
+					<input type="text" id="symbol" placeholder="Symbol">
+				</div>
+				<div class="field">
+					<label>Stock Name</label>
+					<input type="text" id="name" placeholder="Stock Name">
+				</div>
+				<button class="ui button" id="submitform" type="submit">Add Stock</button>
+			</div>
+
+			<br/>
+			<div>
+				<h2 class="ui header"> Status </h2>
+				<div id="result">
+				</div>
+			</div>
+
+		</div> <!-- main container -->
+
+		<script type="text/javascript">
+
+			$("#submitform").click(function() {
+				add_stock();
+			});
+
+			function add_stock() {
+
+				var symbol = $("#symbol").val();
+				var name = $("#name").val();
+
+				$("#result").html("Processing...");
+
+				$.ajax({url:"/add_stock?symbol="+symbol+"&name="+name, success: function(result) {
+
+					$("#symbol").val("");
+					$("#name").val("");
+					$("#result").html(result);
+				}});
+
+				return true;
+			}
+
+		</script>
+
+	</body>
+</html>
+

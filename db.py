@@ -12,6 +12,20 @@ def select(query):
 
     return data
 
+def update(query):
+    conn = sql.connect('data/stocks.db')
+    cursor = conn.cursor()
+    try: 
+        cursor.execute(query)
+        conn.commit()
+    except Exception as e:
+        print e
+    conn.close()
+
+def insert_stock(symbol, name):
+    query = 'INSERT INTO stock values ("{0}", "{1}");'
+    update(query.format(symbol, name))
+
 # get stock name
 def get_name(symbol):
     query = 'SELECT name FROM stock WHERE symbol="{0}";';
