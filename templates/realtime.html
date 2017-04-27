@@ -43,11 +43,9 @@
 					<div class="ui grid">
 						<div class="three column row" id="div_high_low"> </div>
 						<div class="row">
-							<div class="ui header">
-								Advice from Nexta: 
-								<div class="label" id = 'label'></div>
-							</div>
-							<div class="chart" id='chart'></div>
+							<div id="advice"> </div>
+							<br/>
+							<div class="chart" id="chart"> </div>
 						</div>
 					</div>
 				</div> <!-- twelve column -->
@@ -65,6 +63,11 @@
 			// draw the graph
 			$.ajax({url: "/data/realtime_graph/{{symbol}}", success: function(result) {
 				var wrapper = JSON.parse(result);
+
+				if (wrapper == "error") {
+					$("#advice").html("<h3 class='ui center align red header' align='center'> Realtime data for this stock is unavailable </h3>");
+					return
+				}
 				
 				data = wrapper["cleaned"]
 				slope = wrapper["slope"]

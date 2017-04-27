@@ -115,7 +115,12 @@ def data_realtime_graph(symbol = None):
     rows = db.get_realtime_records(symbol)
 
     rows = rows[:-9]
-    pStock = Future_Predict.predictStock(symbol, "2017-04-21", "real")
+    try:
+        pStock = Future_Predict.predictStock(symbol, "2017-04-21", "real")
+    except Exception as e:
+        print e
+        return json.dumps("error")
+
     cleaned = []
     for row in rows:
         temp = {}
