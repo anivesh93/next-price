@@ -2,12 +2,13 @@ import json
 import random
 import time
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 app = Flask(__name__)
 app.debug = True
 
 import db
 import Future_Predict
+from data.historical import insert_data
 
 @app.route('/')
 def index():
@@ -32,6 +33,23 @@ def historical(symbol=None):
             symbol=symbol, 
             name=name)
 
+@app.route('/add')
+def add(symbol=None):
+    return render_template('add.html')
+
+# This is the callback when the user clicks on sumbit
+@app.route('/add_stock')
+def add_stock():
+    symbol = request.args.get('symbol')
+    name = request.args.get('name')
+
+    db.insert_stock(symbol, name)
+    insert_data(symbol, 'data/')
+
+    # add model training function here
+
+    return "Stock added and model trained."
+
 @app.route('/hello/')
 @app.route('/hello/<name>')
 def hello(name=None):
@@ -51,7 +69,7 @@ def data_historical_graph(symbol = None):
         temp["date"] = row[1]
         temp["closePrice"]  = row[5]
         # temp["pred"] = row[5] + random.randint(-2, 2)
-        cleaned.append(temp)
+        leaned.append(temp)
 
     lastdate1 = time.strptime(cleaned[len(cleaned)-1]["date"], "%Y-%m-%d")
     for dic in pStock:

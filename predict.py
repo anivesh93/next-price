@@ -1,12 +1,12 @@
 from __future__ import print_function
-from helper_func import addFeatures, performRegression, getStock
+from helper_func import addFeatures, performRegression, getStock, getRealTime
 import sys
 import os
 import pickle
 import traceback
 import numpy as np
 
-def main(output_dir):
+def main(symbol, data_type, output_dir):
 
     scores = {}
 
@@ -15,12 +15,17 @@ def main(output_dir):
     delta = range(8, maxdelta)
     print('Delta days accounted: ', max(delta))
 
-    stock_symbols = ['GOOGL','YHOO', 'MSFT', 'AMZN', 'TWTR', 'FB', 'CSCO', 'BAC', 'AAPL', 'AMD']
+    #stock_symbols = ['GOOGL','YHOO', 'MSFT', 'TWTR', 'FB', 'CSCO', 'BAC', 'AAPL', 'AMD']
+    #stock_symbols = ['AMZN']
+    stock_symbols = [symbol]
 
     for symbol in stock_symbols:
         try:
 
-            dataset = getStock(symbol, '2014-01-01', '2016-04-24')
+            if(data_type == "hist"):
+                dataset = getStock(symbol, '2015-01-01', '2017-04-24')
+            else:
+                dataset = getRealTime(symbol)
 
 
             #apply roll mean delayed returns
@@ -58,7 +63,7 @@ def main(output_dir):
             if 'symbol' in finance.columns:
                 finance.drop('symbol', axis=1, inplace=True)
 
-            mean_squared_errors, r2_scores = performRegression(Traindata,Trainlabel, 0.95, symbol, output_dir)
+            mean_squared_errors, r2_scores = performRegression(Traindata,Trainlabel, 0.95, symbol, output_dir, data_type)
 
             scores[symbol] = [mean_squared_errors, r2_scores]
 
@@ -70,4 +75,4 @@ def main(output_dir):
         pickle.dump(scores, handle)
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main(sys.argv[1],sys.argv[2], sys.argv[3])
