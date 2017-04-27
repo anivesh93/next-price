@@ -175,7 +175,7 @@ def data_realtime_graph(symbol = None):
     print len(x)
     y = np.array(data)
     print y
-    z = np.polyfit(x,y,1)
+    z = np.polyfit(x,y,1) #fitting a linear regression model to find slope of line
     print "{0}x + {1}".format(*z)
 
     wrapper_dic = {}
