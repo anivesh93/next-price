@@ -29,12 +29,18 @@ statistics etc.
 
 - FuturePredict.py
 
+Given a Company and the type of data to predict, it pulls an initial data and
+invokes the functions to predict the future stock values
 
 - predict.py
 
+Given a Company , type of data and time period invokes functions to pull the
+data and train and save models for various regression algorithms
 
 - helperfunc.py
 
+Contains all the functions needed by predict.py and FuturePredict.py to perform
+training and prediction of stock market values
 
 - data/historical.py
 
