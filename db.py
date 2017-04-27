@@ -12,6 +12,20 @@ def select(query):
 
     return data
 
+def update(query):
+    conn = sql.connect('data/stocks.db')
+    cursor = conn.cursor()
+    try: 
+        cursor.execute(query)
+        conn.commit()
+    except Exception as e:
+        print e
+    conn.close()
+
+def insert_stock(symbol, name):
+    query = 'INSERT INTO stock values ("{0}", "{1}");'
+    update(query.format(symbol, name))
+
 # get stock name
 def get_name(symbol):
     query = 'SELECT name FROM stock WHERE symbol="{0}";';
@@ -113,8 +127,19 @@ def get_realtime_records(symbol):
         SELECT * 
         FROM realtime 
         WHERE SYMBOL = "{0}" 
-        -- ORDER BY DATE DESC
-        -- LIMIT 20
+        -- ORDER BY date, time DESC
+        -- LIMIT 15
+    '''
+
+    return select(query.format(symbol))
+
+def get_realtime_15(symbol):
+    query = '''
+        SELECT * 
+        FROM realtime 
+        WHERE SYMBOL = "{0}" 
+        ORDER BY date, time DESC
+        LIMIT 15
     '''
 
     return select(query.format(symbol))
