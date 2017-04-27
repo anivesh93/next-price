@@ -60,7 +60,7 @@ def hello(name=None):
 @app.route('/data/historical_graph/<symbol>')
 def data_historical_graph(symbol = None):
     rows = db.get_historical_records(symbol)
-    pStock = Future_Predict.predictStock(symbol, "2017-04-24")
+    pStock = Future_Predict.predictStock(symbol, "2017-04-24", "hist")
     print len(pStock)
     cleaned = []
     for row in rows:
@@ -69,7 +69,7 @@ def data_historical_graph(symbol = None):
         temp["date"] = row[1]
         temp["closePrice"]  = row[5]
         # temp["pred"] = row[5] + random.randint(-2, 2)
-        leaned.append(temp)
+        cleaned.append(temp)
 
     lastdate1 = time.strptime(cleaned[len(cleaned)-1]["date"], "%Y-%m-%d")
     for dic in pStock:
