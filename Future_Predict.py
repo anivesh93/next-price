@@ -1,19 +1,27 @@
 from __future__ import print_function
-from helper_func import addFeatures, performRegression, getStock,futurepredict
+from helper_func import addFeatures, performRegression, getStock,futurepredict, getRealTimePredict
 import sys
 import os
 import pickle
 import traceback
 import numpy as np
-from datetime import  timedelta, date
+from datetime import  timedelta, date, datetime
 
 
+#Call this function as folllows
+# For Historical predictStock("GOOGL", "2017-04-21 ", "hist")\
+# For Real predictStock("GOOGL", "2017-04-21 ", "real")
 
-def predictStock(symbol,dt,):
+def predictStock(symbol, dt, data_type):
 
-    d = date(int(dt.split("-")[0]), int(dt.split("-")[1]), int(dt.split("-")[2]))
-    startdate = d - timedelta(days=15)
-    enddate = d
+    """
+
+    :rtype: object
+    """
+    if(data_type == "hist"):
+        d = date(int(dt.split("-")[0]), int(dt.split("-")[1]), int(dt.split("-")[2]))
+        startdate = d - timedelta(days=15)
+        enddate = d
 
     scores = {}
 
@@ -22,8 +30,16 @@ def predictStock(symbol,dt,):
     delta = range(8, maxdelta)
     #print('Delta days accounted: ', max(delta))
 
+    if(data_type == "hist"):
+        dataset = getStock(symbol)
+    else:
+        dataset, dt = getRealTimePredict(symbol)
 
-    dataset = getStock(symbol, startdate, enddate)
+        d = datetime(int(dt.split("-")[0]), int(dt.split("-")[1]), int(dt.split("-")[2].split(" ")[0]), int(dt.split("-")[2].split(" ")[1].split(":")[0]),
+                     int(dt.split("-")[2].split(" ")[1].split(":")[1]))
+        startdate = d - timedelta(minutes=15)
+        enddate = d
+
 
     #apply roll mean delayed returns
     # Add features
@@ -63,8 +79,9 @@ def predictStock(symbol,dt,):
     GradientBoosting Regressor
     MLPClassifier
     '''
-    model_name = "MLPClassifier"
-    predictedStock = futurepredict(Traindata,Trainlabel, symbol, startdate,model_name)
+    model_name = "RandomForest Regressor"
+    predictedStock = futurepredict(Traindata,Trainlabel, symbol, startdate,model_name,data_type)
 
     return predictedStock
+
 

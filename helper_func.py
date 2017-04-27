@@ -15,20 +15,59 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 from datetime import  timedelta, date
 import pandas_datareader.data as web
-# import pandas.io.data as web
+import sqlite3
 
 def getStock(symbol, start, end):
 
-
-
     df = web.DataReader(symbol, 'yahoo', start, end)
+
+    print(df.head())
 
     df = df[['Close']]
     df.columns.values[-1] = 'Close'
     df.columns = df.columns + '_' + symbol
     df['Return_%s' %symbol] = df['Close_%s' %symbol].pct_change()
 
+    print(df.head())
+
     return df
+
+def getRealTime(symbol):
+
+    con = sqlite3.connect("data/stocks.db")
+    query = 'SELECT * FROM realtime WHERE symbol="{0}";';
+    df = pd.read_sql_query(query.format(symbol), con)
+
+    dfa = df[['price']]
+    dfb = df[['date','time']]
+    dfa.index = pd.MultiIndex.from_arrays(dfb.values.T)
+
+    df = dfa
+    df.columns.values[-1] = 'Close'
+    df.columns = df.columns + '_' + symbol
+    df['Return_%s' %symbol] = df['Close_%s' %symbol].pct_change()
+
+    con.close()
+    return df
+
+def getRealTimePredict(symbol):
+
+    con = sqlite3.connect("data/stocks.db")
+    query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" ORDER BY DATE,TIME DESC LIMIT 15'
+    df = pd.read_sql_query(query.format(symbol), con)
+
+    dfa = df[['price']]
+    dfb = df[['date','time']]
+    dfa.index = pd.MultiIndex.from_arrays(dfb.values.T)
+
+    df = dfa
+    df.columns.values[-1] = 'Close'
+    df.columns = df.columns + '_' + symbol
+    df['Return_%s' %symbol] = df['Close_%s' %symbol].pct_change()
+    date = dfb.get_value(14,'date')+" "+dfb.get_value(14,'time')
+
+    con.close()
+    return df,date
 
 def getReturns(df,symbol):
 
@@ -51,7 +90,7 @@ def addFeatures(dataframe, adjclose, returns, n):
     dataframe[exp_ma] = pd.ewma(dataframe[returns], halflife=30)
 
 # REGRESSION
-def performRegression(traindata, testdata, split, symbol, output_dir):
+def performRegression(traindata, testdata, split, symbol, output_dir, data_type):
 
     #features = dataset.columns[1:]
     index = int(np.floor(traindata.shape[0]*split))
@@ -80,10 +119,7 @@ def performRegression(traindata, testdata, split, symbol, output_dir):
 
     for classifier in classifiers:
 
-        predicted_values.append(benchmark_model(classifier, train, test, trainl, testl, out_params, symbol))
-
-
-    predicted_values.append(benchmark_model(classifier, train, test, trainl, testl, out_params, symbol))
+        predicted_values.append(benchmark_model(classifier, train, test, trainl, testl, out_params, symbol, data_type))
 
 
     print('-'*80)
@@ -103,7 +139,7 @@ def performRegression(traindata, testdata, split, symbol, output_dir):
     return mean_squared_errors, r2_scores
 
 
-def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*args, **kwargs):
+def benchmark_model(model, train, test, trainl, testl, output_params, symbol, data_type, *args, **kwargs):
 
     print('-'*80)
     model_name = model.__str__().split('(')[0].replace('Regressor', ' Regressor')
@@ -120,8 +156,8 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
 
     from sklearn.externals import joblib
 
-    filename = symbol +"_"+ model_name +".pkl"
-    joblib.dump(model, filename)
+    filename = symbol +"_"+ model_name +"_"+ data_type +".pkl"
+    joblib.dump(model,"data/models/"+filename)
 
     for i in range(1,test.shape[0]+1):
         testd = test[i-1:i]
@@ -171,13 +207,16 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
     return pred
 
 
-def futurepredict(Testdata,Testlabel, symbol, startdate, model_name):
+def futurepredict(Testdata,Testlabel, symbol, startdate, model_name,data_type):
 
     predict = []
-    date = startdate + timedelta(days=2)
+    if(data_type == "hist"):
+        date = startdate + timedelta(days=2)
+    else:
+        date = startdate + timedelta(minutes=2)
 
-    filename = symbol +"_"+ model_name +".pkl"
-    model = joblib.load("data/"+filename)
+    filename = symbol +"_"+ model_name +"_"+ data_type +".pkl"
+    model = joblib.load("data/models/"+filename)
 
     if(model_name == "MLPClassifier"):
         Testlabel = np.asarray(Testlabel, dtype="|S6")
@@ -201,7 +240,11 @@ def futurepredict(Testdata,Testlabel, symbol, startdate, model_name):
 
 
         predict.append({"date":str(date),"prediction":predicted_value[0]})
-        date = date + timedelta(days=1)
+        if(data_type == "hist"):
+            date = date + timedelta(days=1)
+        else:
+            date = date + timedelta(minutes=1)
+
 
 
 
