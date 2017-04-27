@@ -1,3 +1,7 @@
+# written by: Anivesh
+# assisted by: Soundar
+# debugged by: Sanjay
+
 import urllib2
 import sqlite3
 from datetime import datetime
@@ -56,15 +60,19 @@ def download_one(conn, cursor):
 
 def main():
 
+    # open connection to the database
     conn = sqlite3.connect('stocks.db')
     cursor = conn.cursor()
     
     while True:
+        # calculate the time to sleep
         sleep_time = interval - time.time() % interval
         print datetime.now(), 'sleep_time', sleep_time
         time.sleep(sleep_time)
+        # call the function to download one set of data point
         download_one(conn, cursor)
 
+    # close connection to the database
     conn.close()
 
 if __name__ == '__main__':

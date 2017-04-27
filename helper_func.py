@@ -1,3 +1,7 @@
+# written by: Soundar
+# assisted by: Sanjay
+# debugged by: Ashish
+
 from __future__ import print_function
 import numpy as np
 import pandas as pd
@@ -17,6 +21,7 @@ from sklearn.externals import joblib
 from datetime import  timedelta, date
 import pandas_datareader.data as web
 import sqlite3
+import requests
 
 #gets historical data from yahoo finance for the given company within the given time period
 def getStock(symbol, start, end):
@@ -53,7 +58,8 @@ def getRealTime(symbol):
 def getRealTimePredict(symbol):
 
     con = sqlite3.connect("data/stocks.db")
-    query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" ORDER BY DATE,TIME DESC LIMIT 15'
+    query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" ORDER BY DATE DESC LIMIT 15'
+    # query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" LIMIT 15'
     df = pd.read_sql_query(query.format(symbol), con)
 
     dfa = df[['price']]

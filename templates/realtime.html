@@ -43,7 +43,9 @@
 					<div class="ui grid">
 						<div class="three column row" id="div_high_low"> </div>
 						<div class="row">
-							<div class="chart" id='chart'></div>
+							<div id="advice"> </div>
+							<br/>
+							<div class="chart" id="chart"> </div>
 						</div>
 					</div>
 				</div> <!-- twelve column -->
@@ -60,12 +62,42 @@
 
 			// draw the graph
 			$.ajax({url: "/data/realtime_graph/{{symbol}}", success: function(result) {
-				var data = JSON.parse(result);
+				var wrapper = JSON.parse(result);
+
+				if (wrapper == "error") {
+					$("#advice").html("<h3 class='ui center align red header' align='center'> Realtime data for this stock is unavailable </h3>");
+					return
+				}
+				
+				data = wrapper["cleaned"]
+				slope = wrapper["slope"]
+				//convert dates fetched from Flask to Javascripts format
 				for (var x = 0; x < data.length; x++) 
 				{
 					data[x].date = new Date(data[x].date);    
 				}
 
+				function printAdvice() 
+				{
+					// var res;
+					// if (data[data.length-1].pred > data[data.length-11].price) //check latest prediction and latest stock price
+					// {	res = "SELL"; }
+					// else if (data[data.length-1].pred < data[data.length-11].price)
+					// {	res = "BUY"; }
+					// else
+					// {	res = "HOLD"; }
+
+					var res;
+					if (slope > 0.02)
+					{	res = "SELL, as the slope of the trend line is : " + slope + "(> 0.02)"; }
+					else if (slope < 0.02)
+					{	res = "BUY, as the slope of the trend line is : " + slope + "(< 0.02)"; }
+					else
+					{	res = "HOLD, as the slope of the trend line is : " + slope; }
+
+					return res;
+				}
+				document.getElementById("label").innerHTML = printAdvice();
 				// var chart = d3.timeseries()
 				//          	.addSerie(data,{x:'date', y:'price', diff:'diff'},{interpolate:'monotone',color:"#333"})
 				//            	.width(900)
@@ -74,7 +106,7 @@
 				// chart('#chart3')
 
 				var chart = d3.timeseries()
-							.addSerie(data.slice(0, data.length-12),{x:'date',y:'price'},{interpolate:'linear',color:"#a6cee3",label:"value"})
+							.addSerie(data.slice(0, data.length-10),{x:'date',y:'price'},{interpolate:'linear',color:"#a6cee3",label:"value"})
 							.addSerie(data.slice(data.length-21),
 							{x:'date',y:'pred',ci_up:'ci_up',ci_down:'ci_down'},
 							{interpolate:'monotone',dashed:true,color:"#a6cee3",label:"prediction"})

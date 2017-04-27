@@ -1,3 +1,7 @@
+# written by: Soundar
+# assisted by: Mayank
+# debugged by: Anivesh
+
 from __future__ import print_function
 from helper_func import addFeatures, performRegression, getStock, getRealTime
 import sys
