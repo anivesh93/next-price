@@ -115,17 +115,22 @@ def data_historical_graph(symbol = None):
     
     return json.dumps(wrapper_dic)
 
+# endpoint for getting realtime data for populating the graph
 @app.route('/data/realtime_graph/<symbol>')
 def data_realtime_graph(symbol = None):
+
+    # fetch data from the database 
     rows = db.get_realtime_records(symbol)
 
     rows = rows[:-9]
     try:
+        # get the prediction datat from the prediction function
         pStock = Future_Predict.predictStock(symbol, "2017-04-21", "real")
     except Exception as e:
         print e
         return json.dumps("error")
 
+    # clean the data and fit the data for populating the graph
     cleaned = []
     for row in rows:
         temp = {}
