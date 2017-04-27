@@ -9,37 +9,22 @@ from datetime import  timedelta, date, datetime
 
 
 #Call this function as folllows
-# For Historical predictStock("GOOGL", "2017-04-21 ", "hist")\
+# For Historical predictStock("GOOGL", "2017-04-21 ", "hist")
 # For Real predictStock("GOOGL", "2017-04-21 ", "real")
 
 def predictStock(symbol, dt, data_type):
 
-    """
-
-    :rtype: object
-    """
     if(data_type == "hist"):
         d = date(int(dt.split("-")[0]), int(dt.split("-")[1]), int(dt.split("-")[2]))
         startdate = d - timedelta(days=15)
         enddate = d
-
-    scores = {}
-
-    maxdelta = 30
-
-    delta = range(8, maxdelta)
-    #print('Delta days accounted: ', max(delta))
-
-    if(data_type == "hist"):
-        dataset = getStock(symbol)
+        dataset = getStock(symbol, startdate, enddate)
     else:
         dataset, dt = getRealTimePredict(symbol)
 
         d = datetime(int(dt.split("-")[0]), int(dt.split("-")[1]), int(dt.split("-")[2].split(" ")[0]), int(dt.split("-")[2].split(" ")[1].split(":")[0]),
                      int(dt.split("-")[2].split(" ")[1].split(":")[1]))
         startdate = d - timedelta(minutes=15)
-        enddate = d
-
 
     #apply roll mean delayed returns
     # Add features
@@ -47,10 +32,7 @@ def predictStock(symbol, dt, data_type):
     close = columns[-2]
     returns = columns[-1]
 
-
-    #for dele in delta:
     addFeatures(dataset, close, returns, 1)
-
 
     finance = dataset.iloc[1:,:] # computation of returns and moving means introduces NaN which are nor removed
 
@@ -78,10 +60,10 @@ def predictStock(symbol, dt, data_type):
     KNeighbors Regressor
     GradientBoosting Regressor
     MLPClassifier
+    BayesianRidge
     '''
-    model_name = "RandomForest Regressor"
+    model_name = "BayesianRidge"
     predictedStock = futurepredict(Traindata,Trainlabel, symbol, startdate,model_name,data_type)
 
     return predictedStock
-
 

@@ -10,6 +10,7 @@ from sklearn.ensemble import AdaBoostRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVC, SVR
+from sklearn.linear_model import BayesianRidge, LinearRegression
 import os
 from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
@@ -21,14 +22,10 @@ def getStock(symbol, start, end):
 
     df = web.DataReader(symbol, 'yahoo', start, end)
 
-    print(df.head())
-
     df = df[['Close']]
     df.columns.values[-1] = 'Close'
     df.columns = df.columns + '_' + symbol
     df['Return_%s' %symbol] = df['Close_%s' %symbol].pct_change()
-
-    print(df.head())
 
     return df
 
@@ -113,7 +110,8 @@ def performRegression(traindata, testdata, split, symbol, output_dir, data_type)
         AdaBoostRegressor(),
         KNeighborsRegressor(),
         GradientBoostingRegressor(),
-        MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+        MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1),
+        BayesianRidge(compute_score=True)
     ]
 
 
