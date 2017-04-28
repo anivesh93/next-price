@@ -43,10 +43,10 @@
 					<div class="ui grid">
 						<div class="three column row" id="div_high_low"> </div>
 						<div class="row">
-							<div class="ui header">
-								Advice from Nexta: 
-								<div class="label" id = 'label'></div>
-							</div>
+							<b class="ui">Advice from Nexta: &nbsp;&nbsp;&nbsp;</b> 
+							<div align="right" id='label'> </div>
+						</div>
+						<div class="row">
 							<div class="chart" id='chart'></div>
 						</div>
 					</div>
@@ -72,6 +72,10 @@
 					data[x].date = new Date(data[x].date);    
 				}
 
+				function round(value, decimals) {
+					return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+				}
+
 				//print advice to buy, sell or hold stock in question
 				//check slope against an epsilon(0.02 here), to give advice
 				function printAdvice() 
@@ -86,14 +90,15 @@
 
 					var res;
 					if (slope > 0.02)
-					{	res = "SELL, as the slope of the trend line is : " + slope + "(> 0.02)"; }
+					{	res = "<b> BUY</b> | the slope of the trend line is : " + round(slope, 2) + " (> 0.02)"; }
 					else if (slope < 0.02)
-					{	res = "BUY, as the slope of the trend line is : " + slope + "(< 0.02)"; }
+					{	res = "<b >SELL</b> | the slope of the trend line is : " + round(slope, 2) + " (< 0.02)"; }
 					else
-					{	res = "HOLD, as the slope of the trend line is : " + slope; }
+					{	res = "<b>HOLD</b> | the slope of the trend line is : " + round(slope, 2); }
 
 					return res;
 				}
+
 				// var chart = d3.timeseries()
 				//          	.addSerie(data,{x:'date', y:'closePrice', diff:'diff'},{interpolate:'monotone',color:"#333"})
 				//            	.width(900)
