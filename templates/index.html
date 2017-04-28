@@ -61,12 +61,18 @@
 			symbols.push(row[0]);
 		}
 
+		function round(value, decimals) {
+			return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+		}
+
+
 		$.ajax({url: "/data/realtime?s=" + symbols.join("+") + "&f=snl1",
 			success: function(response) {
 
 				response = JSON.parse(response);
 				for (var row in response) {
-					$("#"+response[row][0]).html(response[row][1]);
+					var price = parseFloat(response[row][1]);
+					$("#"+response[row][0]).html(round(price, 2));
 				}
 			}
 		});
