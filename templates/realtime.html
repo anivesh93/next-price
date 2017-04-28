@@ -106,7 +106,7 @@
 				
 
 				// chart('#chart3')
-
+                //superimpose actual datapoints with predictions for the final ten values
 				var chart = d3.timeseries()
 							.addSerie(data.slice(0, data.length-10),{x:'date',y:'price'},{interpolate:'linear',color:"#a6cee3",label:"value"})
 							.addSerie(data.slice(data.length-21),
