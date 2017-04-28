@@ -44,7 +44,7 @@
 						<div class="three column row" id="div_high_low"> </div>
 						<div class="row">
 							<b class="ui">Advice from Nexta: &nbsp;&nbsp;&nbsp;</b> 
-							<div align="right" id='label'> </div>
+							<div align="right" id='advice'> </div>
 						</div>
 						<div class="row">
 							<div class="chart" id='chart'></div>
@@ -98,8 +98,8 @@
 					var res;
 					if (slope > 0.02)
 					{	res = "<b> BUY</b> | the slope of the trend line is : " + round(slope, 2) + " (> 0.02)"; }
-					else if (slope < 0.02)
-					{	res = "<b >SELL</b> | the slope of the trend line is : " + round(slope, 2) + " (< 0.02)"; }
+					else if (slope < -0.02)
+					{	res = "<b >SELL</b> | the slope of the trend line is : " + round(slope, 2) + " (< -0.02)"; }
 					else
 					{	res = "<b>HOLD</b> | the slope of the trend line is : " + round(slope, 2); }
 
