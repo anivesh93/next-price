@@ -1,12 +1,20 @@
+# written by: Soundar
+# assisted by: Mayank
+# debugged by: Anivesh
+
 from __future__ import print_function
-from helper_func import addFeatures, performRegression, getStock
+from helper_func import addFeatures, performRegression, getStock, getRealTime
 import sys
 import os
 import pickle
 import traceback
 import numpy as np
 
-def main(output_dir):
+# Call this function in the following way to train a new model for a particu;ar company
+# addstock("AIQ", "hist")
+
+#Train the system to create models for prediction
+def addstock(symbol, data_type):
 
     scores = {}
 
@@ -15,29 +23,28 @@ def main(output_dir):
     delta = range(8, maxdelta)
     print('Delta days accounted: ', max(delta))
 
-    stock_symbols = ['GOOGL','YHOO', 'MSFT', 'AMZN', 'TWTR', 'FB', 'CSCO', 'BAC', 'AAPL', 'AMD']
+    #stock_symbols = ['GOOGL','YHOO', 'MSFT', 'AMZN', 'TWTR', 'FB', 'CSCO', 'BAC', 'AAPL', 'AMD']
+    stock_symbols = [symbol]
 
     for symbol in stock_symbols:
         try:
+            #pull data from the database for training
+            if(data_type == "hist"):
+                dataset = getStock(symbol, '2015-01-01', '2017-04-24')
+            else:
+                dataset = getRealTime(symbol)
 
-            dataset = getStock(symbol, '2014-01-01', '2016-01-01')
 
-
-            #apply roll mean delayed returns
-            # Add features
+            #add features for each record
             columns = dataset.columns
             close = columns[-2]
             returns = columns[-1]
 
-
-            #for dele in delta:
             addFeatures(dataset, close, returns, 1)
 
+            finance = dataset.iloc[1:,:]
 
-
-            finance = dataset.iloc[1:,:] # computation of returns and moving means introduces NaN which are nor removed
-
-            #print(finance)
+            #create the feature matrix
             previ = 2
             Traindata = np.array(dataset.ix[1:6,:].as_matrix().reshape(1,25))
 
@@ -46,7 +53,6 @@ def main(output_dir):
             for i in range(7,finance.shape[0]):
                 tempdata = np.array(dataset.ix[previ:i,:].as_matrix().reshape(1,25))
                 Traindata = np.concatenate((Traindata, tempdata) ,axis=0)
-                #print(tempdata)
                 previ = previ+1
 
                 templabel = np.array(finance['Close_%s' %symbol][i])
@@ -58,7 +64,8 @@ def main(output_dir):
             if 'symbol' in finance.columns:
                 finance.drop('symbol', axis=1, inplace=True)
 
-            mean_squared_errors, r2_scores = performRegression(Traindata,Trainlabel, 0.95, symbol, output_dir)
+            #Train the system and compute errors
+            mean_squared_errors, r2_scores = performRegression(Traindata,Trainlabel, 0.95, symbol, "output_graphs/", data_type)
 
             scores[symbol] = [mean_squared_errors, r2_scores]
 
@@ -66,8 +73,6 @@ def main(output_dir):
             pass
             traceback.print_exc()
 
-    with open(os.path.join(output_dir, 'scores.pickle'), 'wb') as handle:
+    with open(os.path.join("output_graphs/", 'scores.pickle'), 'wb') as handle:
         pickle.dump(scores, handle)
 
-if __name__ == '__main__':
-    main(sys.argv[1])

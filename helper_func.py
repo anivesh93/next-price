@@ -1,3 +1,7 @@
+# written by: Soundar
+# assisted by: Sanjay
+# debugged by: Ashish
+
 from __future__ import print_function
 import numpy as np
 import pandas as pd
@@ -10,13 +14,19 @@ from sklearn.ensemble import AdaBoostRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVC, SVR
+from sklearn.linear_model import BayesianRidge, LinearRegression
 import os
-import pandas.io.data
 from sklearn.neural_network import MLPClassifier
+from sklearn.externals import joblib
+from datetime import  timedelta, date
+import pandas_datareader.data as web
+import sqlite3
+import requests
 
+#gets historical data from yahoo finance for the given company within the given time period
 def getStock(symbol, start, end):
 
-    df = pd.io.data.get_data_yahoo(symbol, start, end)
+    df = web.DataReader(symbol, 'yahoo', start, end)
 
     df = df[['Close']]
     df.columns.values[-1] = 'Close'
@@ -25,6 +35,47 @@ def getStock(symbol, start, end):
 
     return df
 
+# gets real time data from the database
+def getRealTime(symbol):
+
+    con = sqlite3.connect("data/stocks.db")
+    query = 'SELECT * FROM realtime WHERE symbol="{0}";';
+    df = pd.read_sql_query(query.format(symbol), con)
+
+    dfa = df[['price']]
+    dfb = df[['date','time']]
+    dfa.index = pd.MultiIndex.from_arrays(dfb.values.T)
+
+    df = dfa
+    df.columns.values[-1] = 'Close'
+    df.columns = df.columns + '_' + symbol
+    df['Return_%s' %symbol] = df['Close_%s' %symbol].pct_change()
+
+    con.close()
+    return df
+
+#gets few real time data to start predicting
+def getRealTimePredict(symbol):
+
+    con = sqlite3.connect("data/stocks.db")
+    query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" ORDER BY DATE DESC LIMIT 15'
+    # query = 'SELECT * FROM realtime WHERE SYMBOL = "{0}" LIMIT 15'
+    df = pd.read_sql_query(query.format(symbol), con)
+
+    dfa = df[['price']]
+    dfb = df[['date','time']]
+    dfa.index = pd.MultiIndex.from_arrays(dfb.values.T)
+
+    df = dfa
+    df.columns.values[-1] = 'Close'
+    df.columns = df.columns + '_' + symbol
+    df['Return_%s' %symbol] = df['Close_%s' %symbol].pct_change()
+    date = dfb.get_value(14,'date')+" "+dfb.get_value(14,'time')
+
+    con.close()
+    return df,date
+
+#computes returns using the closing values
 def getReturns(df,symbol):
 
 
@@ -34,6 +85,7 @@ def getReturns(df,symbol):
 
     return df
 
+# adds features like time, rolling mean and Exponential Moving average
 def addFeatures(dataframe, adjclose, returns, n):
 
     return_n = adjclose[9:] + "Time" + str(n)
@@ -45,10 +97,10 @@ def addFeatures(dataframe, adjclose, returns, n):
     exp_ma = returns[7:] + "ExponentMovingAvg" + str(n)
     dataframe[exp_ma] = pd.ewma(dataframe[returns], halflife=30)
 
-# REGRESSION
-def performRegression(traindata, testdata, split, symbol, output_dir):
+# Perform training
+def performRegression(traindata, testdata, split, symbol, output_dir, data_type):
 
-    #features = dataset.columns[1:]
+
     index = int(np.floor(traindata.shape[0]*split))
     train , test = traindata[:index], traindata[index:]
 
@@ -58,10 +110,10 @@ def performRegression(traindata, testdata, split, symbol, output_dir):
 
     out_params = (symbol, output_dir)
 
-    #output = dataset.columns[0]
 
     predicted_values = []
 
+    #Perform training for all the following classifiers
     classifiers = [
         RandomForestRegressor(n_estimators=10, n_jobs=-1),
         SVR(C=100000, kernel='rbf', epsilon=0.1, gamma=1, degree=2),
@@ -69,16 +121,14 @@ def performRegression(traindata, testdata, split, symbol, output_dir):
         AdaBoostRegressor(),
         KNeighborsRegressor(),
         GradientBoostingRegressor(),
-        MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+        MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1),
+        BayesianRidge(compute_score=True)
     ]
 
 
     for classifier in classifiers:
 
-        predicted_values.append(benchmark_model(classifier, train, test, trainl, testl, out_params, symbol))
-
-
-    predicted_values.append(benchmark_model(classifier, train, test, trainl, testl, out_params, symbol))
+        predicted_values.append(benchmark_model(classifier, train, test, trainl, testl, out_params, symbol, data_type))
 
 
     print('-'*80)
@@ -97,22 +147,12 @@ def performRegression(traindata, testdata, split, symbol, output_dir):
 
     return mean_squared_errors, r2_scores
 
-
-def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*args, **kwargs):
+# fit the data for each regression model and save the model
+def benchmark_model(model, train, test, trainl, testl, output_params, symbol, data_type, *args, **kwargs):
 
     print('-'*80)
     model_name = model.__str__().split('(')[0].replace('Regressor', ' Regressor')
     print(model_name)
-
-
-    '''
-    if 'SVR' in model.__str__():
-        tuned_parameters = [{'kernel': ['rbf', 'polynomial'], 'gamma': [1e-3, 1e-4],
-                     'C': [1, 10, 100, 1000]},
-                    {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
-        model = GridSearchCV(SVC(C=1), tuned_parameters, cv=5,
-                       scoring='%s_weighted' % 'recall')
-    '''
 
     symbol, output_dir = output_params
 
@@ -122,6 +162,11 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
         trainlabels = trainl
 
     model.fit(train, trainlabels, *args, **kwargs)
+
+    from sklearn.externals import joblib
+
+    filename = symbol +"_"+ model_name +"_"+ data_type +".pkl"
+    joblib.dump(model,"data/models/"+filename)
 
     for i in range(1,test.shape[0]+1):
         testd = test[i-1:i]
@@ -135,8 +180,6 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
             if(model_name == "MLPClassifier"):
                 predicted_value = predicted_value.astype(np.float)
             pred = np.append(pred, predicted_value)
-
-
 
 
 
@@ -171,3 +214,66 @@ def benchmark_model(model, train, test, trainl, testl, output_params, symbol,*ar
     plt.clf()
 
     return pred
+
+# predict the future stock values given the current values
+def futurepredict(Testdata,Testlabel, symbol, startdate, model_name,data_type):
+
+    predict = []
+    if(data_type == "hist"):
+        date = startdate + timedelta(days=2)
+    else:
+        date = startdate + timedelta(minutes=2)
+
+    filename = symbol +"_"+ model_name +"_"+ data_type +".pkl"
+    model = joblib.load("data/models/"+filename)
+
+    if(model_name == "MLPClassifier"):
+        Testlabel = np.asarray(Testlabel, dtype="|S6")
+    else:
+        Testlabel = Testlabel
+
+
+    for i in range(1,Testdata.shape[0]+22):
+
+        testd = Testdata[i-1:i]
+        if(i == 1):
+            predicted_value = model.predict(testd)
+            if(model_name == "MLPClassifier"):
+                predicted_value = predicted_value.astype(np.float)
+            pred = np.array(predicted_value)
+        else:
+            predicted_value = model.predict(temptest)
+            if(model_name == "MLPClassifier"):
+                predicted_value = predicted_value.astype(np.float)
+            pred = np.append(pred, predicted_value)
+
+
+        predict.append({"date":str(date),"prediction":predicted_value[0]})
+        if(data_type == "hist"):
+            date = date + timedelta(days=1)
+        else:
+            date = date + timedelta(minutes=1)
+
+
+
+
+
+        d = {'$close':[testd[0,20],predicted_value]}
+        new_df = pd.DataFrame(d)
+        new_df.columns = ['close']
+        new_df = getReturns(new_df,symbol)
+        columns = new_df.columns
+        close = columns[-2]
+        returns = columns[-1]
+        addFeatures(new_df,close, returns, 1)
+
+
+        temptest = np.array(testd[0,5:25])
+        for j in range(0,5):
+            temptest = np.append(temptest,new_df.iloc[1][j])
+
+        temptest = temptest.reshape(1,25)
+
+        Testdata = np.append(Testdata,np.array(temptest), axis =0)
+
+    return predict

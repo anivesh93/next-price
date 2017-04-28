@@ -1,0 +1,188 @@
+(dp0
+<<<<<<< HEAD
+VARNC
+=======
+VTSLA
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p1
+(lp2
+(lp3
+cnumpy.core.multiarray
+scalar
+p4
+(cnumpy
+dtype
+p5
+(S'f8'
+p6
+I0
+I1
+tp7
+Rp8
+(I3
+S'<'
+p9
+NNNI-1
+I-1
+I0
+tp10
+<<<<<<< HEAD
+bS'-\xfe\xa3\xb5.\xf2\xf2?'
+=======
+bS'\xc3&\xcd\x00\x10!\x99@'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p11
+tp12
+Rp13
+ag4
+(g8
+<<<<<<< HEAD
+S'N\x80\x8f|&kO@'
+=======
+S'\xd2]\x94Kf\x83\xb0@'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p14
+tp15
+Rp16
+ag4
+(g8
+<<<<<<< HEAD
+S'\x1c0b\xa2\xea\xc8\xd5?'
+=======
+S"G\x1fNU\xc2'\xaf@"
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p17
+tp18
+Rp19
+ag4
+(g8
+<<<<<<< HEAD
+S'7\x9b\xb4\x98\x8f\xad\xd6?'
+=======
+S'\x8bK\x10\xbe\xed\x7f\x8e@'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p20
+tp21
+Rp22
+ag4
+(g8
+<<<<<<< HEAD
+S'|\x82N\xdf\x0e*\x07@'
+=======
+S'-\x07D\xc4\x933\x8b@'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p23
+tp24
+Rp25
+ag4
+(g8
+<<<<<<< HEAD
+S'<\x10\xb3s\xd5\x97B@'
+=======
+S'\xc4a\x91/{\n\xb3@'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p26
+tp27
+Rp28
+ag4
+(g8
+<<<<<<< HEAD
+S'D\xd6\x8d\xd5\x05Er@'
+=======
+S'g\xef\x05\nv\xc2\x9a@'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p29
+tp30
+Rp31
+ag4
+(g8
+<<<<<<< HEAD
+S'\x9c,(,\xb840@'
+=======
+S'*(\xa7\x93\xedh\xd0@'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p32
+tp33
+Rp34
+aa(lp35
+g4
+(g8
+<<<<<<< HEAD
+S'\x04\x88\xa1\xc4\xca\xc5\x0c\xc0'
+=======
+S'\xe7\xfaa\xd4\x02\x8f\x06\xc0'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p36
+tp37
+Rp38
+ag4
+(g8
+<<<<<<< HEAD
+S';\xe7\x96$\x89]n\xc0'
+=======
+S'\xe3\x86\xcc\x0e\xc9\x14"\xc0'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p39
+tp40
+Rp41
+ag4
+(g8
+<<<<<<< HEAD
+S'P\xe3)p\xa4\x90\xd4\xbf'
+=======
+S'W\xc6\xb8\x8c\x83\xf1 \xc0'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p42
+tp43
+Rp44
+ag4
+(g8
+<<<<<<< HEAD
+S'X"us3\x08\xd8\xbf'
+=======
+S'4sAp\xef\x16\xf5\xbf'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p45
+tp46
+Rp47
+ag4
+(g8
+<<<<<<< HEAD
+S'S\x8e\xfa\x94\xdez$\xc0'
+=======
+S'\xba\x8e\xfb\x86&\x14\xf1\xbf'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p48
+tp49
+Rp50
+ag4
+(g8
+<<<<<<< HEAD
+S'\x86&\x11l7\xeba\xc0'
+=======
+S"b\n?t\xad'%\xc0"
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p51
+tp52
+Rp53
+ag4
+(g8
+<<<<<<< HEAD
+S"'\x1a\xfd\x17\xda\xb6\x91\xc0"
+=======
+S'R\xc7/\x19\x98\x8a\x08\xc0'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p54
+tp55
+Rp56
+ag4
+(g8
+<<<<<<< HEAD
+S'\r5Z\xd9O\xf4N\xc0'
+=======
+S'\xef\x0c\xae#\x98tC\xc0'
+>>>>>>> 74c929817b84a965173b587252c7a2d9ac9f14f2
+p57
+tp58
+Rp59
+aas.

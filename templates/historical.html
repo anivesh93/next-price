@@ -25,6 +25,7 @@
 					<a class="item" href="/"> next-price </a>
 					<a class="item" href="/realtime/{{symbol}}"> Realtime </a>
 					<a class="active item" href="/historical/{{symbol}}"> Historical </a>
+					<a class="item" href="/add"> Add Stock </a>
 				</div>
 			</div>
 		</div>
@@ -42,14 +43,16 @@
 					<div class="ui grid">
 						<div class="three column row" id="div_high_low"> </div>
 						<div class="row">
+							<b class="ui">Advice from Nexta: &nbsp;&nbsp;&nbsp;</b> 
+							<div align="right" id='label'> </div>
+						</div>
+						<div class="row">
 							<div class="chart" id='chart'></div>
 						</div>
 					</div>
 				</div> <!-- twelve column -->
 			</div> <!-- grid -->
-		
-		</div> <!-- main container -->
-		<script type="text/javascript">
+			<script type="text/javascript">
 
 			// ajax request to stats data
 			$.ajax({url: "/data/highlow/{{symbol}}", success: function(result) {
@@ -57,11 +60,43 @@
 			}});
 			
 			// draw the graph
-			$.ajax({url: "/data/graph/{{symbol}}", success: function(result) {
-				var data = JSON.parse(result);
+			$.ajax({url: "/data/historical_graph/{{symbol}}", success: function(result) {
+				var wrapper = JSON.parse(result);
+
+				data = wrapper["cleaned"]
+				slope = wrapper["slope"]
+
+				//convert dates fetched from Flask to Javascripts format
 				for (var x = 0; x < data.length; x++) 
 				{
 					data[x].date = new Date(data[x].date);    
+				}
+
+				function round(value, decimals) {
+					return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+				}
+
+				//print advice to buy, sell or hold stock in question
+				//check slope against an epsilon(0.02 here), to give advice
+				function printAdvice() 
+				{
+					// var res;
+					// if (data[data.length-1].pred > data[data.length-12].closePrice)
+					// {	res = "SELL"; }
+					// else if (data[data.length-1].pred < data[data.length-12].closePrice)
+					// {	res = "BUY"; }
+					// else
+					// {	res = "HOLD"; }
+
+					var res;
+					if (slope > 0.02)
+					{	res = "<b> BUY</b> | the slope of the trend line is : " + round(slope, 2) + " (> 0.02)"; }
+					else if (slope < 0.02)
+					{	res = "<b >SELL</b> | the slope of the trend line is : " + round(slope, 2) + " (< 0.02)"; }
+					else
+					{	res = "<b>HOLD</b> | the slope of the trend line is : " + round(slope, 2); }
+
+					return res;
 				}
 
 				// var chart = d3.timeseries()
@@ -70,10 +105,12 @@
 				
 
 				// chart('#chart3')
+				document.getElementById("label").innerHTML = printAdvice();
 
+                 //superimpose actual datapoints with predictions for the final ten values
 				var chart = d3.timeseries()
-							.addSerie(data,{x:'date',y:'closePrice'},{interpolate:'linear',color:"#a6cee3",label:"value"})
-							.addSerie(data.slice(90, 100),
+							.addSerie(data.slice(0, data.length-12),{x:'date',y:'closePrice'},{interpolate:'linear',color:"#a6cee3",label:"value"})
+							.addSerie(data.slice(data.length-21),
 							{x:'date',y:'pred',ci_up:'ci_up',ci_down:'ci_down'},
 							{interpolate:'monotone',dashed:true,color:"#a6cee3",label:"prediction"})
 							.width(900)
@@ -85,6 +122,8 @@
 				$("#div_avg_low").html(result);
 			}});
 		</script>
+		</div> <!-- main container -->
+	
 	</body>
 </html>
 

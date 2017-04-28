@@ -1,3 +1,6 @@
+# written by: Shreyas
+# assisted by: Mayank
+# debugged by: Anivesh
 import sqlite3 as sql
 import random
 from datetime import datetime, timedelta
@@ -12,11 +15,31 @@ def select(query):
 
     return data
 
+# executes a query on the database that is of the update type
+def update(query):
+    conn = sql.connect('data/stocks.db')
+    cursor = conn.cursor()
+    try: 
+        cursor.execute(query)
+        conn.commit()
+    except Exception as e:
+        print e
+    conn.close()
+
+# insert values to the stock table
+def insert_stock(symbol, name):
+    query = 'INSERT INTO stock values ("{0}", "{1}");'
+    update(query.format(symbol, name))
+
 # get stock name
 def get_name(symbol):
     query = 'SELECT name FROM stock WHERE symbol="{0}";';
     return select(query.format(symbol))
 
+# get all the symbols and the stock names from the stock table
+def get_stocks():
+    query = 'SELECT * FROM stock;'
+    return select(query)
 
 # return all stocks with the latest realtime price
 def get_stocks_realtime():
@@ -95,12 +118,38 @@ def get_avg_low(symbol):
 
     return select(query.format(date_output, symbol))
 
+# return the historical data for a symbol from 2015 onwards
 def get_historical_records(symbol):
-
     query = '''
         SELECT * 
         FROM historical 
-        WHERE SYMBOL = "{0}" AND date > '2015-01-01'; 
+        WHERE SYMBOL = "{0}" AND DATE > '2015-01-01'
+        -- ORDER BY DATE DESC
+        -- LIMIT 20
+    '''
+
+    return select(query.format(symbol))
+
+# return all available realtime data for a symbol
+def get_realtime_records(symbol):
+    query = '''
+        SELECT * 
+        FROM realtime 
+        WHERE SYMBOL = "{0}" 
+        -- ORDER BY date, time DESC
+        -- LIMIT 15
+    '''
+
+    return select(query.format(symbol))
+
+# return the last 15 records from the realtime table for a particular symbol
+def get_realtime_15(symbol):
+    query = '''
+        SELECT * 
+        FROM realtime 
+        WHERE SYMBOL = "{0}" 
+        ORDER BY date, time DESC
+        LIMIT 15
     '''
 
     return select(query.format(symbol))
