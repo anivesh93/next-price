@@ -18,7 +18,7 @@ def main():
     cursor = conn.cursor()
 
     # execute all the queries that are present in the db_commands.txt file
-    cursor.executescript(rget_queries())
+    cursor.executescript(get_queries())
     
     # commit and close the connection
     conn.commit()

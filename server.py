@@ -69,7 +69,7 @@ def hello(name=None):
 @app.route('/data/historical_graph/<symbol>')
 def data_historical_graph(symbol = None):
     rows = db.get_historical_records(symbol) #get historical data from db
-    pStock = Future_Predict.predictStock(symbol, "2017-04-24", "hist") #get generated predictions
+    pStock = Future_Predict.predictStock(symbol, "2017-04-28", "hist") #get generated predictions
     # print len(pStock)
     cleaned = [] #array of dictionaries, each dictionary has data and closePrice pairs
     for row in rows:
