@@ -54,4 +54,4 @@ data from the Yahoo! Finance API. Then it inserts the data into the realtime
 table in the sqlite database.
 
 ## Contributors
-Sanjay, Anivesh, Soundar, Shreyas, Ashish, Mayank
+Sanjay, Anivesh, Soundar
